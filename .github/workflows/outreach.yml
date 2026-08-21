@@ -1,0 +1,41 @@
+name: Daily Outreach
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # Every day at 7 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run outreach
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          BREVO_SMTP_USER: ${{ secrets.BREVO_SMTP_USER }}
+          BREVO_SMTP_PASSWORD: ${{ secrets.BREVO_SMTP_PASSWORD }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+        run: python main.py
+
+      - name: Commit updated CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add companies.csv
+          git commit -m "Update companies $(date -u +'%Y-%m-%d')" || echo "No changes"
+          git push origin main
