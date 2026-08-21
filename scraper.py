@@ -30,7 +30,7 @@ def find_company_websites():
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
             try:
-                results = ddgs.text(query, max_results=10)
+                results = ddgs.text(query, max_results=20)
                 for res in results:
                     url = res.get("href")
                     if url and not is_blocked(url):

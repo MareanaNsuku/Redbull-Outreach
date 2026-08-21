@@ -28,11 +28,21 @@ SEARCH_QUERIES = [
     "supply chain logistics Cape Town email",
     "last mile delivery Cape Town contact",
     "trucking companies Cape Town email",
-    "fleet management Cape Town contact"
+    "fleet management Cape Town contact",
+    "car transport Cape Town contact",
+    "motorcycle dealer Cape Town email",
+    "car rental Cape Town contact",
+    "auto body repair Cape Town email",
+    "truck dealership Cape Town contact",
+    "vehicle logistics Cape Town",
+    "moving company Cape Town contact",
+    "food delivery Cape Town contact",
+    "pharmaceutical logistics Cape Town",
+    "warehousing Cape Town contact"
 ]
-MAX_COMPANIES_PER_RUN = 30
+MAX_COMPANIES_PER_RUN = 100
 REQUEST_TIMEOUT = 15
-DELAY_BETWEEN_REQUESTS = 2
+DELAY_BETWEEN_REQUESTS = 1
 
 # ---------- Output File ----------
 CSV_FILE = "companies.csv"
