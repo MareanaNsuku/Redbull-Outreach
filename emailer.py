@@ -1,5 +1,9 @@
 import smtplib
+import os
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 from config import *
 
 def send_email(to_email, company_name, website):
@@ -8,10 +12,33 @@ def send_email(to_email, company_name, website):
         return False
 
     body = EMAIL_BODY.format(company_name=company_name, website=website)
-    msg = MIMEText(body)
+
+    msg = MIMEMultipart()
     msg["Subject"] = EMAIL_SUBJECT
     msg["From"] = SENDER_EMAIL
     msg["To"] = to_email
+    msg["X-Priority"] = "1"
+    msg["Importance"] = "High"
+
+    msg.attach(MIMEText(body, "plain"))
+
+    for filepath in ATTACHMENTS:
+        if os.path.exists(filepath):
+            filename = os.path.basename(filepath)
+            try:
+                with open(filepath, "rb") as attachment:
+                    part = MIMEBase("application", "octet-stream")
+                    part.set_payload(attachment.read())
+                    encoders.encode_base64(part)
+                    part.add_header(
+                        "Content-Disposition",
+                        f"attachment; filename= {filename}",
+                    )
+                    msg.attach(part)
+            except Exception as e:
+                print(f"Failed to attach {filename}: {e}")
+        else:
+            print(f"Warning: Attachment not found: {filepath}")
 
     # Try Brevo SMTP
     try:

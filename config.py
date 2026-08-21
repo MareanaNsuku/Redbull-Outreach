@@ -48,3 +48,10 @@ Best regards,
 [Your Title]
 [Your Website]
 """
+
+# ---------- Attachments ----------
+ATTACHMENTS = [
+    "attachments/RedBull Proposal.pdf",
+    "attachments/RBBCR TEAM DETAILS.pdf",
+    "attachments/Delivering-More-Than-Packages-Delivering-Innovation.pptx"
+]
