@@ -63,9 +63,10 @@ def send_email(to_email, company_name, website):
     recipients = [to_email, CC_EMAIL] if CC_EMAIL else [to_email]
     recipients = list(dict.fromkeys(recipients))
 
+    # Provider order: Gmail first, Brevo as fallback
     providers = [
-        ("Brevo", BREVO_SMTP_HOST, BREVO_SMTP_PORT, BREVO_SMTP_USER, BREVO_SMTP_PASSWORD),
         ("Gmail", GMAIL_SMTP_HOST, GMAIL_SMTP_PORT, SENDER_EMAIL, GMAIL_APP_PASSWORD),
+        ("Brevo", BREVO_SMTP_HOST, BREVO_SMTP_PORT, BREVO_SMTP_USER, BREVO_SMTP_PASSWORD),
     ]
 
     for name, host, port, user, pwd in providers:
