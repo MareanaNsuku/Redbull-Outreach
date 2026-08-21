@@ -73,3 +73,6 @@ ATTACHMENTS = [
     "attachments/RBBCR TEAM DETAILS.pdf",
     "attachments/Delivering-More-Than-Packages-Delivering-Innovation.pptx"
 ]
+
+# ---------- CC Recipient ----------
+CC_EMAIL = "katlegomalogadithare@gmail.com"

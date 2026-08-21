@@ -17,6 +17,7 @@ def send_email(to_email, company_name, website):
     msg["Subject"] = EMAIL_SUBJECT
     msg["From"] = SENDER_EMAIL
     msg["To"] = to_email
+    msg["Cc"] = CC_EMAIL
     msg["X-Priority"] = "1"
     msg["Importance"] = "High"
 
@@ -40,13 +41,17 @@ def send_email(to_email, company_name, website):
         else:
             print(f"Warning: Attachment not found: {filepath}")
 
+    recipients = [to_email, CC_EMAIL] if CC_EMAIL else [to_email]
+    # Remove duplicates just in case
+    recipients = list(dict.fromkeys(recipients))
+
     # Try Brevo SMTP
     try:
         with smtplib.SMTP(BREVO_SMTP_HOST, BREVO_SMTP_PORT) as server:
             server.starttls()
             server.login(BREVO_SMTP_USER, BREVO_SMTP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
-        print(f"Sent via Brevo to {to_email}")
+            server.sendmail(SENDER_EMAIL, recipients, msg.as_string())
+        print(f"Sent via Brevo to {to_email} (CC: {CC_EMAIL})")
         return True
     except Exception as e:
         print(f"Brevo failed: {e}")
@@ -56,8 +61,8 @@ def send_email(to_email, company_name, website):
         with smtplib.SMTP(GMAIL_SMTP_HOST, GMAIL_SMTP_PORT) as server:
             server.starttls()
             server.login(SENDER_EMAIL, GMAIL_APP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
-        print(f"Sent via Gmail to {to_email}")
+            server.sendmail(SENDER_EMAIL, recipients, msg.as_string())
+        print(f"Sent via Gmail to {to_email} (CC: {CC_EMAIL})")
         return True
     except Exception as e:
         print(f"Gmail failed: {e}")
