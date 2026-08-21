@@ -20,9 +20,17 @@ SEARCH_QUERIES = [
     "logistics companies Cape Town email",
     "courier services Cape Town contact",
     "courier company Cape Town email",
-    "transport and logistics Cape Town contact"
+    "transport and logistics Cape Town contact",
+    "vehicle dealership Cape Town contact",
+    "automotive repair Cape Town email",
+    "auto parts Cape Town contact",
+    "freight forwarding Cape Town contact",
+    "supply chain logistics Cape Town email",
+    "last mile delivery Cape Town contact",
+    "trucking companies Cape Town email",
+    "fleet management Cape Town contact"
 ]
-MAX_COMPANIES_PER_RUN = 20
+MAX_COMPANIES_PER_RUN = 30
 REQUEST_TIMEOUT = 15
 DELAY_BETWEEN_REQUESTS = 2
 

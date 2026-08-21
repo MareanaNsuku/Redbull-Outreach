@@ -1,3 +1,4 @@
+# scraper.py
 import requests
 from bs4 import BeautifulSoup
 from ddgs import DDGS
@@ -7,17 +8,34 @@ import os
 import pandas as pd
 from config import SEARCH_QUERIES, MAX_COMPANIES_PER_RUN, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, CSV_FILE
 
+# Additional patterns to block low-quality domains
+BLOCKED_DOMAINS = [
+    "bing.com", "lusha.com", "aeroleads.com", "dnb.com", "contactout.com",
+    "goodfirms.co", "infobelpro.com", "buzzsouthafrica.com",
+    "capetownbestplaces.com", "fiata.org", "d7leadfinder.com",
+    "yellowpages.net.za", "infoisinfo.co.za", "cybo.com", "yellosa.com",
+    "hotfrog.co.za", "snupit.co.za", "trustlink.co.za"
+]
+BLOCKED_PATTERNS = [re.compile(d) for d in BLOCKED_DOMAINS]
+
+def is_blocked(url):
+    for pat in BLOCKED_PATTERNS:
+        if pat.search(url):
+            return True
+    return False
+
 def find_company_websites():
     domains = set()
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
             try:
-                results = ddgs.text(query, max_results=5)
+                results = ddgs.text(query, max_results=10)
                 for res in results:
                     url = res.get("href")
-                    if url and not any(x in url for x in ["facebook.com", "linkedin.com", "youtube.com", "wikipedia.org"]):
-                        domains.add(url)
+                    if url and not is_blocked(url):
+                        if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
+                            domains.add(url)
             except Exception as e:
                 print(f"Search error: {e}")
             time.sleep(2)
@@ -26,26 +44,42 @@ def find_company_websites():
 def extract_emails_phones(url):
     emails = set()
     phones = set()
-    try:
-        headers = {"User-Agent": "Mozilla/5.0"}
-        resp = requests.get(url, timeout=REQUEST_TIMEOUT, headers=headers)
-        if resp.status_code != 200:
-            return emails, phones
-        soup = BeautifulSoup(resp.text, "html.parser")
-        text = soup.get_text()
 
-        email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-        emails.update(re.findall(email_re, text))
+    urls_to_visit = [url]
+    base_url = url.rstrip('/')
+    for path in ["/contact", "/contact-us", "/about", "/about-us"]:
+        urls_to_visit.append(base_url + path)
 
-        phone_re = r"\+?27[0-9]{9}|0[0-9]{9}"
-        phones.update(re.findall(phone_re, text))
+    for page_url in urls_to_visit:
+        try:
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            resp = requests.get(page_url, timeout=REQUEST_TIMEOUT, headers=headers)
+            if resp.status_code != 200:
+                continue
+            soup = BeautifulSoup(resp.text, "html.parser")
 
-        for a in soup.find_all("a", href=True):
-            if a["href"].startswith("mailto:"):
-                emails.add(a["href"].replace("mailto:", "").split("?")[0])
+            for a in soup.find_all("a", href=True):
+                if a["href"].startswith("mailto:"):
+                    email = a["href"].replace("mailto:", "").split("?")[0].strip()
+                    if re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                        emails.add(email)
 
-    except Exception as e:
-        print(f"Error scraping {url}: {e}")
+            text = soup.get_text()
+            email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+            emails.update(re.findall(email_re, text))
+
+            phone_re = r"\+?27[0-9]{9}|0[0-9]{9}"
+            phones.update(re.findall(phone_re, text))
+
+            for script in soup.find_all("script"):
+                if script.string:
+                    emails.update(re.findall(email_re, script.string))
+
+        except Exception as e:
+            print(f"Error scraping {page_url}: {e}")
+
+        time.sleep(1)
+
     return emails, phones
 
 def scrape_companies():
@@ -63,7 +97,18 @@ def scrape_companies():
             continue
         print(f"Scraping: {url}")
         emails, phones = extract_emails_phones(url)
-        email = next(iter(emails), "")
+
+        email = ""
+        if emails:
+            email = next(iter(emails))
+        else:
+            domain = url.split("//")[-1].split("/")[0].replace("www.", "")
+            for prefix in ["info", "hello", "contact", "admin", "enquiries"]:
+                guessed = f"{prefix}@{domain}"
+                if re.match(r"[^@]+@[^@]+\.[^@]+", guessed):
+                    email = guessed
+                    break
+
         phone = next(iter(phones), "")
         company_name = url.split("//")[-1].split("/")[0].replace("www.", "").split(".")[0]
         data.append({
