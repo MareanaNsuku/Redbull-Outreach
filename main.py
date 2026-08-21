@@ -18,9 +18,8 @@ def main():
             print(f"No email for {company}, marking as 'No email'.")
             continue
 
-        success = send_email(email, company, website)
-        if success:
-            df.at[idx, "emailed"] = "Yes"
+        status = send_email(email, company, website)
+        df.at[idx, "emailed"] = status
 
     df.to_csv(CSV_FILE, index=False)
     print("Outreach finished.")

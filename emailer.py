@@ -1,5 +1,5 @@
 import smtplib
-import os
+import time
 import pandas as pd
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -7,14 +7,29 @@ from email.mime.base import MIMEBase
 from email import encoders
 from config import *
 
+MAX_RETRIES = 2
+RETRY_DELAY = 5  # seconds
+
+def send_via_smtp(host, port, user, password, sender, recipients, msg):
+    for attempt in range(MAX_RETRIES):
+        try:
+            with smtplib.SMTP(host, port, timeout=30) as server:
+                server.starttls()
+                server.login(user, password)
+                server.sendmail(sender, recipients, msg.as_string())
+            return True, "sent"
+        except Exception as e:
+            print(f"  Attempt {attempt+1} via {host} failed: {e}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+    return False, "failed"
+
 def send_email(to_email, company_name, website):
-    # Skip if email is missing or not a string
     if not to_email or not isinstance(to_email, str) or to_email.strip() == "":
         print(f"No valid email for {company_name}, skipping.")
-        return False
+        return "No email"
 
     to_email = to_email.strip()
-
     body = EMAIL_BODY.format(company_name=company_name, website=website)
 
     msg = MIMEMultipart()
@@ -41,33 +56,29 @@ def send_email(to_email, company_name, website):
                     )
                     msg.attach(part)
             except Exception as e:
-                print(f"Failed to attach {filename}: {e}")
+                print(f"  Failed to attach {filename}: {e}")
         else:
-            print(f"Warning: Attachment not found: {filepath}")
+            print(f"  Warning: Attachment not found: {filepath}")
 
-    recipients = [to_email, CC_EMAIL]
+    recipients = [to_email, CC_EMAIL] if CC_EMAIL else [to_email]
     recipients = list(dict.fromkeys(recipients))
 
-    # Try Brevo SMTP
-    try:
-        with smtplib.SMTP(BREVO_SMTP_HOST, BREVO_SMTP_PORT) as server:
-            server.starttls()
-            server.login(BREVO_SMTP_USER, BREVO_SMTP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, recipients, msg.as_string())
-        print(f"Sent via Brevo to {to_email} (CC: {CC_EMAIL})")
-        return True
-    except Exception as e:
-        print(f"Brevo failed: {e}")
+    providers = [
+        ("Brevo", BREVO_SMTP_HOST, BREVO_SMTP_PORT, BREVO_SMTP_USER, BREVO_SMTP_PASSWORD),
+        ("Gmail", GMAIL_SMTP_HOST, GMAIL_SMTP_PORT, SENDER_EMAIL, GMAIL_APP_PASSWORD),
+    ]
 
-    # Fallback to Gmail SMTP
-    try:
-        with smtplib.SMTP(GMAIL_SMTP_HOST, GMAIL_SMTP_PORT) as server:
-            server.starttls()
-            server.login(SENDER_EMAIL, GMAIL_APP_PASSWORD)
-            server.sendmail(SENDER_EMAIL, recipients, msg.as_string())
-        print(f"Sent via Gmail to {to_email} (CC: {CC_EMAIL})")
-        return True
-    except Exception as e:
-        print(f"Gmail failed: {e}")
+    for name, host, port, user, pwd in providers:
+        if not user or not pwd:
+            print(f"  {name} credentials missing, skipping.")
+            continue
+        print(f"  Trying {name}...")
+        success, _ = send_via_smtp(host, port, user, pwd, SENDER_EMAIL, recipients, msg)
+        if success:
+            print(f"  Sent via {name} to {to_email} (CC: {CC_EMAIL})")
+            return "Sent"
+        else:
+            print(f"  {name} failed.")
 
-    return False
+    print(f"  All providers failed for {to_email}")
+    return "Failed"
