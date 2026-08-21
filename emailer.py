@@ -1,5 +1,6 @@
 import smtplib
 import os
+import pandas as pd
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -7,9 +8,12 @@ from email import encoders
 from config import *
 
 def send_email(to_email, company_name, website):
-    if not to_email:
-        print(f"No email for {company_name}, skipping.")
+    # Skip if email is missing or not a string
+    if not to_email or not isinstance(to_email, str) or to_email.strip() == "":
+        print(f"No valid email for {company_name}, skipping.")
         return False
+
+    to_email = to_email.strip()
 
     body = EMAIL_BODY.format(company_name=company_name, website=website)
 
@@ -41,8 +45,7 @@ def send_email(to_email, company_name, website):
         else:
             print(f"Warning: Attachment not found: {filepath}")
 
-    recipients = [to_email, CC_EMAIL] if CC_EMAIL else [to_email]
-    # Remove duplicates just in case
+    recipients = [to_email, CC_EMAIL]
     recipients = list(dict.fromkeys(recipients))
 
     # Try Brevo SMTP
