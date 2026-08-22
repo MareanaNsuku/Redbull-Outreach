@@ -3,11 +3,12 @@ from bs4 import BeautifulSoup
 from ddgs import DDGS
 import re
 import time
+from googlesearch import search as google_search
 import random
 import os
 import pandas as pd
 import urllib3
-from config import SEARCH_QUERIES, MAX_COMPANIES_PER_RUN, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, CSV_FILE
+from config import SEARCH_QUERIES, MAX_COMPANIES_PER_RUN, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, CSV_FILE, SEED_COMPANIES
 
 # Disable SSL warnings (some sites have expired certificates)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -46,31 +47,40 @@ def is_junk_email(email):
 
 def find_company_websites():
     domains = set()
+    # Add seed companies first
+    for url in SEED_COMPANIES:
+        if not is_blocked(url):
+            domains.add(url)
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
             success = False
-            for attempt in range(3):  # up to 3 attempts per query
-                try:
-                    results = list(ddgs.text(query, max_results=10))
-                    if results:
-                        for res in results:
-                            url = res.get("href")
-                            if url and not is_blocked(url):
-                                if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                    domains.add(url)
-                        success = True
-                        break
-                    else:
-                        # No results, wait longer and retry
-                        print(f"  No results for '{query}' (attempt {attempt+1}), waiting {5+attempt*5}s...")
-                        time.sleep(5 + attempt * 5)
-                except Exception as e:
-                    print(f"  Search error on attempt {attempt+1}: {e}")
-                    time.sleep(10)
+            # Try DuckDuckGo first
+            try:
+                results = list(ddgs.text(query, max_results=10))
+                if results:
+                    for res in results:
+                        url = res.get("href")
+                        if url and not is_blocked(url):
+                            if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
+                                domains.add(url)
+                    success = True
+                else:
+                    print(f"  DDG: No results for '{query}', trying Google fallback...")
+            except Exception as e:
+                print(f"  DDG error: {e}, trying Google fallback...")
+            # Google fallback if DDG failed
             if not success:
-                print(f"  Giving up on '{query}' after 3 attempts.")
-            # Polite delay between queries (8-12 seconds)
+                try:
+                    gresults = list(google_search(query, num_results=10, sleep_interval=2))
+                    for url in gresults:
+                        if url and not is_blocked(url):
+                            if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
+                                domains.add(url)
+                    success = True
+                except Exception as e:
+                    print(f"  Google fallback error: {e}")
+            # Polte delay
             time.sleep(8 + random.uniform(0, 4))
     return list(domains)[:MAX_COMPANIES_PER_RUN]
 
