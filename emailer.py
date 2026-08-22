@@ -11,12 +11,11 @@ from config import *
 
 MAX_RETRIES = 2
 RETRY_DELAY = 5
-DAILY_LIMIT = 450  # keep below Gmail's daily cap
+DAILY_LIMIT = 300  # lower to avoid Gmail over-limit
 
 sent_count = 0
 
 def send_via_gmail_smtp(to_email, company_name, website):
-    """Send email using Gmail SMTP."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily limit reached, skipping Gmail.")
@@ -25,9 +24,9 @@ def send_via_gmail_smtp(to_email, company_name, website):
     body = EMAIL_BODY.format(company_name=company_name, website=website)
     msg = MIMEMultipart()
     msg["Subject"] = EMAIL_SUBJECT
-    msg["From"] = SENDER_EMAIL
+    msg["From"] = SENDER_EMAIL.strip()
     msg["To"] = to_email
-    msg["Cc"] = CC_EMAIL
+    msg["Cc"] = CC_EMAIL.strip()
     msg["X-Priority"] = "1"
     msg["Importance"] = "High"
     msg.attach(MIMEText(body, "plain"))
@@ -45,15 +44,15 @@ def send_via_gmail_smtp(to_email, company_name, website):
             except Exception as e:
                 print(f"  Failed to attach {filename}: {e}")
 
-    recipients = [to_email, CC_EMAIL] if CC_EMAIL else [to_email]
+    recipients = [to_email, CC_EMAIL.strip()] if CC_EMAIL else [to_email]
     recipients = list(dict.fromkeys(recipients))
 
     for attempt in range(MAX_RETRIES):
         try:
             with smtplib.SMTP(GMAIL_SMTP_HOST, GMAIL_SMTP_PORT, timeout=30) as server:
                 server.starttls()
-                server.login(SENDER_EMAIL, GMAIL_APP_PASSWORD)
-                server.sendmail(SENDER_EMAIL, recipients, msg.as_string())
+                server.login(SENDER_EMAIL.strip(), GMAIL_APP_PASSWORD.strip())
+                server.sendmail(SENDER_EMAIL.strip(), recipients, msg.as_string())
             print(f"  Sent via Gmail to {to_email}")
             sent_count += 1
             return True
@@ -64,41 +63,53 @@ def send_via_gmail_smtp(to_email, company_name, website):
     return False
 
 def send_via_brevo_api(to_email, company_name, website):
-    """Send email using Brevo HTTP API (not IP-restricted)."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily limit reached, skipping Brevo API.")
         return False
 
     body = EMAIL_BODY.format(company_name=company_name, website=website)
+    api_key = os.environ.get("BREVO_API_KEY", "").strip()
+    sender_email = SENDER_EMAIL.strip()
+    cc_email = CC_EMAIL.strip()
+
     data = {
-        "sender": {"email": SENDER_EMAIL},
+        "sender": {"email": sender_email},
         "to": [{"email": to_email}],
-        "cc": [{"email": CC_EMAIL}] if CC_EMAIL else [],
+        "cc": [{"email": cc_email}] if cc_email else [],
         "subject": EMAIL_SUBJECT,
         "htmlContent": body.replace("\n", "<br>")
     }
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "api-key": os.environ.get("BREVO_API_KEY", "")
+        "api-key": api_key
     }
-    if not headers["api-key"]:
+    if not api_key:
         print("  Brevo API key missing, skipping Brevo API.")
         return False
 
-    try:
-        response = requests.post("https://api.brevo.com/v3/smtp/email", json=data, headers=headers, timeout=30)
-        if response.status_code in [200, 201, 202]:
-            print(f"  Sent via Brevo API to {to_email}")
-            sent_count += 1
-            return True
-        else:
-            print(f"  Brevo API failed: {response.status_code} {response.text}")
-            return False
-    except Exception as e:
-        print(f"  Brevo API error: {e}")
-        return False
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = requests.post(
+                "https://api.brevo.com/v3/smtp/email",
+                json=data,
+                headers=headers,
+                timeout=30
+            )
+            if response.status_code in [200, 201, 202]:
+                print(f"  Sent via Brevo API to {to_email}")
+                sent_count += 1
+                return True
+            else:
+                print(f"  Brevo API attempt {attempt+1} failed: {response.status_code} {response.text}")
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)
+        except Exception as e:
+            print(f"  Brevo API attempt {attempt+1} error: {e}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+    return False
 
 def send_email(to_email, company_name, website):
     global sent_count
