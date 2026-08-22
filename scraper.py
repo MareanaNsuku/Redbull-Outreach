@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from ddgs import DDGS
 import re
 import time
+import random
 import os
 import pandas as pd
 import urllib3
@@ -48,16 +49,29 @@ def find_company_websites():
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
-            try:
-                results = ddgs.text(query, max_results=20)
-                for res in results:
-                    url = res.get("href")
-                    if url and not is_blocked(url):
-                        if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                            domains.add(url)
-            except Exception as e:
-                print(f"Search error: {e}")
-            time.sleep(2)
+            success = False
+            for attempt in range(3):  # up to 3 attempts per query
+                try:
+                    results = list(ddgs.text(query, max_results=10))
+                    if results:
+                        for res in results:
+                            url = res.get("href")
+                            if url and not is_blocked(url):
+                                if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
+                                    domains.add(url)
+                        success = True
+                        break
+                    else:
+                        # No results, wait longer and retry
+                        print(f"  No results for '{query}' (attempt {attempt+1}), waiting {5+attempt*5}s...")
+                        time.sleep(5 + attempt * 5)
+                except Exception as e:
+                    print(f"  Search error on attempt {attempt+1}: {e}")
+                    time.sleep(10)
+            if not success:
+                print(f"  Giving up on '{query}' after 3 attempts.")
+            # Polite delay between queries (8-12 seconds)
+            time.sleep(8 + random.uniform(0, 4))
     return list(domains)[:MAX_COMPANIES_PER_RUN]
 
 def extract_emails_phones(url):
