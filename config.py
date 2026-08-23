@@ -45,6 +45,36 @@ SEARCH_QUERIES = [
     "energy drink distributor Cape Town",
     "beverage company Cape Town contact",
     "fitness supplement Cape Town"
+    # Additional automotive / driving / sports companies
+    "car service Cape Town contact",
+    "tyre fitment Cape Town contact",
+    "car audio Cape Town",
+    "car accessories Cape Town",
+    "car wash Cape Town contact",
+    "auto glass Cape Town",
+    "vehicle tracking Cape Town",
+    "fleet management Cape Town contact",
+    "karting track Cape Town",
+    "motorsport team Cape Town",
+    "motorcycle dealership Cape Town contact",
+    "trucking company Cape Town contact",
+    "caravan dealer Cape Town",
+    "trailer dealer Cape Town",
+    "vehicle testing Cape Town",
+    "road safety Cape Town",
+    "vehicle inspection Cape Town",
+    "automotive finance Cape Town",
+    "automotive insurance Cape Town",
+    "car recovery Cape Town",
+    "towing company Cape Town",
+    "panel beater Cape Town",
+    "auto electrician Cape Town",
+    "engine rebuild Cape Town",
+    "gearbox repair Cape Town",
+    "suspension specialist Cape Town",
+    "car rental agency Cape Town contact",
+    "car club Cape Town contact"
+
 ]
 MAX_COMPANIES_PER_RUN = 100
 # ---------- Seed Companies (known Cape Town companies) ----------
