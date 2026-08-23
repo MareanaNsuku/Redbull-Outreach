@@ -14,16 +14,37 @@ GMAIL_SMTP_PORT = 587
 
 # ---------- Scraping Settings (Cape Town focused) ----------
 SEARCH_QUERIES = [
+    # Logistics & Transport (existing)
     "automotive companies Cape Town contact",
     "car dealership Cape Town contact email",
     "delivery companies Cape Town contact",
     "logistics companies Cape Town email",
     "courier services Cape Town contact",
     "transport and logistics Cape Town contact",
-    "vehicle dealership Cape Town contact",
-    "automotive repair Cape Town email",
-    "freight forwarding Cape Town contact",
-    "moving company Cape Town contact"
+    # Automotive & Motorsport
+    "motorsport companies Cape Town contact",
+    "vehicle branding Cape Town",
+    "car wrap Cape Town contact",
+    "automotive parts supplier Cape Town",
+    "truck dealership Cape Town contact",
+    "vehicle graphics Cape Town",
+    # Workshop & Safety
+    "workshop equipment supplier Cape Town",
+    "safety gear supplier Cape Town",
+    "engineering workshop Cape Town",
+    "tool supplier Cape Town",
+    # Manufacturing & Engineering
+    "manufacturing companies Cape Town contact",
+    "engineering companies Cape Town email",
+    "metal fabrication Cape Town",
+    # Sports & Sponsorship
+    "sports marketing agency Cape Town",
+    "sports sponsorship Cape Town",
+    "event sponsorship Cape Town",
+    # Food & Beverage (energy drinks)
+    "energy drink distributor Cape Town",
+    "beverage company Cape Town contact",
+    "fitness supplement Cape Town"
 ]
 MAX_COMPANIES_PER_RUN = 100
 # ---------- Seed Companies (known Cape Town companies) ----------
@@ -108,6 +129,18 @@ SEED_COMPANIES = [
     "https://www.cmremovals.co.za",
     "https://www.madmacintosh.com"
 ]
+# Additional seed companies for expanded industries
+SEED_COMPANIES.extend([
+    "https://www.motorsport.co.za",
+    "https://www.vehiclebranding.co.za",
+    "https://www.workshopequipment.co.za",
+    "https://www.safetygear.co.za",
+    "https://www.engineeringnews.co.za",
+    "https://www.manufacturing.co.za",
+    "https://www.sportsmarketing.co.za",
+    "https://www.energydrink.co.za"
+])
+
 
 REQUEST_TIMEOUT = 15
 DELAY_BETWEEN_REQUESTS = 1
