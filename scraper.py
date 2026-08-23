@@ -28,7 +28,12 @@ JUNK_EMAIL_DOMAINS = [
     "example.com", "email.com", "mail.com", "facebook.com", "google.com",
     "wikipedia.org", "youtube.com", "linkedin.com", "twitter.com",
     "sentry.io", "wixpress.com", "shopify.com", "wordpress.com",
-    "godaddy.com", "domain.com", "webmaster.com", "sentry-next.wixpress.com"
+    "godaddy.com", "domain.com", "webmaster.com", "sentry-next.wixpress.com",
+    "mysite.com", "test.com", "sample.com", "placeholdermail.com",
+    "mailinator.com", "10minutemail.com", "guerrillamail.com",
+    "temp-mail.org", "throwawaymail.com", "dispostable.com",
+    "yopmail.com", "getnada.com", "sharklasers.com", "grr.la",
+    "jane.doe", "john.doe", "johndoe", "janedoe"
 ]
 JUNK_EMAIL_PATTERNS = [re.compile(d) for d in JUNK_EMAIL_DOMAINS]
 
@@ -44,6 +49,29 @@ def is_junk_email(email):
         if pat.search(domain):
             return True
     return False
+
+def is_valid_email_format(email):
+    """Return True if email looks like a properly formatted address."""
+    if not email or not isinstance(email, str):
+        return False
+    email = email.strip().lower()
+    # Reject if contains spaces or multiple @ or missing domain/TLD
+    if ' ' in email or email.count('@') != 1:
+        return False
+    local, domain = email.split('@')
+    if not local or not domain:
+        return False
+    if '.' not in domain:
+        return False
+    if len(domain.split('.')[-1]) < 2:
+        return False
+    # Reject obvious placeholder local parts
+    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe', 'info@example', 'contact@example']
+    for ph in placeholders:
+        if ph in local:
+            return False
+    return True
+
 
 def find_company_websites():
     domains = set()
@@ -105,19 +133,19 @@ def extract_emails_phones(url):
                 href = a["href"].strip()
                 if href.startswith("mailto:"):
                     email = href.replace("mailto:", "").split("?")[0].strip()
-                    if re.match(r"[^@]+@[^@]+\.[^@]+", email) and not is_junk_email(email):
+                    if re.match(r"[^@]+@[^@]+\.[^@]+", email) and not is_junk_email(email) and is_valid_email_format(email):
                         emails.add(email.lower())
 
             text = soup.get_text()
             email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
             for email in re.findall(email_re, text):
-                if not is_junk_email(email):
+                if not is_junk_email(email) and is_valid_email_format(email):
                     emails.add(email.lower())
 
             for script in soup.find_all("script"):
                 if script.string:
                     for email in re.findall(email_re, script.string):
-                        if not is_junk_email(email):
+                        if not is_junk_email(email) and is_valid_email_format(email):
                             emails.add(email.lower())
 
             phone_re = r"(?:\+27|0)(?:[ \-]?\d){9,11}"

@@ -9,6 +9,24 @@ from email.mime.base import MIMEBase
 from email import encoders
 from config import *
 
+
+def is_valid_email_format(email):
+    """Return True if email looks valid."""
+    if not email or not isinstance(email, str):
+        return False
+    email = email.strip().lower()
+    if ' ' in email or email.count('@') != 1:
+        return False
+    local, domain = email.split('@')
+    if not local or not domain or '.' not in domain:
+        return False
+    if len(domain.split('.')[-1]) < 2:
+        return False
+    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe']
+    for ph in placeholders:
+        if ph in local:
+            return False
+    return True
 MAX_RETRIES = 2
 RETRY_DELAY = 5
 DAILY_LIMIT = 300  # lower to avoid Gmail over-limit
@@ -117,7 +135,7 @@ def send_email(to_email, company_name, website):
         print("  Daily email limit reached, skipping.")
         return "Limit reached"
 
-    if not to_email or not isinstance(to_email, str) or to_email.strip() == "":
+    if not to_email or not isinstance(to_email, str) or to_email.strip() == "" or not is_valid_email_format(to_email):
         print(f"No valid email for {company_name}, skipping.")
         return "No email"
 
