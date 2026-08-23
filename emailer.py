@@ -2,16 +2,22 @@ import smtplib
 import time
 import requests
 import os
-import pandas as pd
+import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from config import *
 
+# ---------- Global constants ----------
+MAX_RETRIES = 2
+RETRY_DELAY = 5
+DAILY_LIMIT = 150   # maximum emails per run, keeps us under Gmail's daily cap
+
+sent_count = 0
 
 def is_valid_email_format(email):
-    import re
+    """Return True if email looks valid."""
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
@@ -20,15 +26,12 @@ def is_valid_email_format(email):
     local, domain = email.split('@')
     if not local or not domain or '.' not in domain:
         return False
-    # Reject any percent signs or URL encoding
     if '%' in email:
         return False
-    # Allowed TLDs (last part)
     tld = domain.split('.')[-1]
     if not re.match(r'^[a-z]{2,4}$', tld):
         return False
-    # Reject local parts that start with digits followed by keywords
-    placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
+    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe']
     for ph in placeholders:
         if ph in local:
             return False
@@ -36,10 +39,8 @@ def is_valid_email_format(email):
         return False
     return True
 
-
-sent_count = 0
-
 def send_via_gmail_smtp(to_email, company_name, website):
+    """Send email using Gmail SMTP."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily limit reached, skipping Gmail.")
@@ -87,6 +88,7 @@ def send_via_gmail_smtp(to_email, company_name, website):
     return False
 
 def send_via_brevo_api(to_email, company_name, website):
+    """Send email using Brevo HTTP API (fallback)."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily limit reached, skipping Brevo API.")
@@ -110,7 +112,7 @@ def send_via_brevo_api(to_email, company_name, website):
         "api-key": api_key
     }
     if not api_key:
-        print("  Brevo API key missing, skipping Brevo API.")
+        print("  Brevo API key missing, skipping.")
         return False
 
     for attempt in range(MAX_RETRIES):
@@ -136,6 +138,7 @@ def send_via_brevo_api(to_email, company_name, website):
     return False
 
 def send_email(to_email, company_name, website):
+    """Send email with Gmail first, Brevo API fallback."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily email limit reached, skipping.")
@@ -156,12 +159,3 @@ def send_email(to_email, company_name, website):
 
     print(f"  All providers failed for {to_email}")
     return "Failed"
-
-
-def safe_send_email(to_email, company_name, website):
-    """Call send_email but never raise."""
-    try:
-        return send_email(to_email, company_name, website)
-    except Exception as e:
-        print(f"Unhandled error in send_email for {to_email}: {e}")
-        return "Failed"
