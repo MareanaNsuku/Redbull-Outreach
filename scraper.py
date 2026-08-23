@@ -1,41 +1,39 @@
 import requests
 from bs4 import BeautifulSoup
 from ddgs import DDGS
+from googlesearch import search as google_search
 import re
 import time
-from googlesearch import search as google_search
 import random
 import os
 import pandas as pd
 import urllib3
 from config import SEARCH_QUERIES, MAX_COMPANIES_PER_RUN, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, CSV_FILE, SEED_COMPANIES
 
-# Disable SSL warnings (some sites have expired certificates)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# Directories and low-quality domains to skip
 BLOCKED_DOMAINS = [
-    "bing.com", "lusha.com", "aeroleads.com", "dnb.com", "contactout.com",
-    "goodfirms.co", "infobelpro.com", "buzzsouthafrica.com",
-    "capetownbestplaces.com", "fiata.org", "d7leadfinder.com",
-    "yellowpages.net.za", "infoisinfo.co.za", "cybo.com", "yellosa.com",
-    "hotfrog.co.za", "snupit.co.za", "trustlink.co.za",
-    "facebook.com", "linkedin.com", "youtube.com", "wikipedia.org",
-    "tiktok.com", "instagram.com", "twitter.com", "pissedconsumer.com"
+    "facebook.com", "linkedin.com", "youtube.com", "wikipedia.org", "tiktok.com",
+    "instagram.com", "twitter.com", "pissedconsumer.com", "yelp.com",
+    "yellowpages", "yellosa", "infobel", "cylex", "netpages", "fyple",
+    "brabys", "hotfrog", "snupit", "trustlink", "africanadvice",
+    "findglocal", "shopshours", "capetourism", "autoyas", "infoisinfo",
+    "d7leadfinder", "aeroleads", "lusha", "contactout", "dnb.com",
+    "bing.com", "goodfirms", "fiata.org", "cargoyellowpages", "buzzsouthafrica"
 ]
-BLOCKED_PATTERNS = [re.compile(d) for d in BLOCKED_DOMAINS]
+BLOCKED_PATTERNS = [re.compile(d, re.IGNORECASE) for d in BLOCKED_DOMAINS]
 
 JUNK_EMAIL_DOMAINS = [
     "example.com", "email.com", "mail.com", "facebook.com", "google.com",
     "wikipedia.org", "youtube.com", "linkedin.com", "twitter.com",
     "sentry.io", "wixpress.com", "shopify.com", "wordpress.com",
-    "godaddy.com", "domain.com", "webmaster.com", "sentry-next.wixpress.com",
-    "mysite.com", "test.com", "sample.com", "placeholdermail.com",
-    "mailinator.com", "10minutemail.com", "guerrillamail.com",
-    "temp-mail.org", "throwawaymail.com", "dispostable.com",
-    "yopmail.com", "getnada.com", "sharklasers.com", "grr.la",
-    "jane.doe", "john.doe", "johndoe", "janedoe"
+    "godaddy.com", "domain.com", "webmaster.com", "mysite.com",
+    "test.com", "sample.com", "mailinator.com", "10minutemail.com",
+    "guerrillamail.com", "temp-mail.org", "throwawaymail.com",
+    "dispostable.com", "yopmail.com", "getnada.com", "sharklasers.com"
 ]
-JUNK_EMAIL_PATTERNS = [re.compile(d) for d in JUNK_EMAIL_DOMAINS]
+JUNK_EMAIL_PATTERNS = [re.compile(d, re.IGNORECASE) for d in JUNK_EMAIL_DOMAINS]
 
 def is_blocked(url):
     for pat in BLOCKED_PATTERNS:
@@ -51,127 +49,133 @@ def is_junk_email(email):
     return False
 
 def is_valid_email_format(email):
-    """Return True if email looks like a properly formatted address."""
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
-    # Reject if contains spaces or multiple @ or missing domain/TLD
-    if ' ' in email or email.count('@') != 1:
+    if " " in email or email.count("@") != 1:
         return False
-    local, domain = email.split('@')
-    if not local or not domain:
+    local, domain = email.split("@")
+    if not local or not domain or "." not in domain:
         return False
-    if '.' not in domain:
+    if len(domain.split(".")[-1]) < 2:
         return False
-    if len(domain.split('.')[-1]) < 2:
-        return False
-    # Reject obvious placeholder local parts
-    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe', 'info@example', 'contact@example']
+    placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
     for ph in placeholders:
         if ph in local:
             return False
     return True
 
-
 def find_company_websites():
     domains = set()
     # Add seed companies first
     for url in SEED_COMPANIES:
-        if not is_blocked(url):
+        if url and not is_blocked(url):
             domains.add(url)
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
-            success = False
-            # Try DuckDuckGo first
             try:
-                results = list(ddgs.text(query, max_results=10))
+                results = list(ddgs.text(query, max_results=8))
                 if results:
                     for res in results:
                         url = res.get("href")
                         if url and not is_blocked(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
                                 domains.add(url)
-                    success = True
                 else:
-                    print(f"  DDG: No results for '{query}', trying Google fallback...")
+                    print("  DDG no results, trying Google...")
+                    try:
+                        gresults = list(google_search(query, num_results=5, sleep_interval=1))
+                        for url in gresults:
+                            if url and not is_blocked(url):
+                                if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
+                                    domains.add(url)
+                    except Exception as e:
+                        print(f"  Google fallback error: {e}")
             except Exception as e:
-                print(f"  DDG error: {e}, trying Google fallback...")
-            # Google fallback if DDG failed
-            if not success:
+                print(f"  DDG error: {e}, trying Google...")
                 try:
-                    gresults = list(google_search(query, num_results=10, sleep_interval=2))
+                    gresults = list(google_search(query, num_results=5, sleep_interval=1))
                     for url in gresults:
                         if url and not is_blocked(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
                                 domains.add(url)
-                    success = True
                 except Exception as e:
                     print(f"  Google fallback error: {e}")
-            # Polte delay
-            time.sleep(8 + random.uniform(0, 4))
+            time.sleep(5 + random.uniform(0, 3))
     return list(domains)[:MAX_COMPANIES_PER_RUN]
 
 def extract_emails_phones(url):
     emails = set()
     phones = set()
-
-    base_url = url.rstrip('/')
     pages_to_visit = [url]
-    for path in ["/contact", "/contact-us", "/about", "/about-us", "/contact.html", "/contact-us.html", "/about.html"]:
-        pages_to_visit.append(base_url + path)
-
-    for page_url in pages_to_visit:
-        try:
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"}
-            resp = requests.get(page_url, timeout=REQUEST_TIMEOUT, headers=headers, verify=False)
-            if resp.status_code != 200:
-                continue
+    try:
+        # Fetch homepage
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"}
+        resp = requests.get(url, timeout=10, headers=headers, verify=False)
+        if resp.status_code == 200:
             soup = BeautifulSoup(resp.text, "html.parser")
-
+            # Look for contact page links
             for a in soup.find_all("a", href=True):
-                href = a["href"].strip()
-                if href.startswith("mailto:"):
-                    email = href.replace("mailto:", "").split("?")[0].strip()
-                    if re.match(r"[^@]+@[^@]+\.[^@]+", email) and not is_junk_email(email) and is_valid_email_format(email):
-                        emails.add(email.lower())
+                text = a.get_text().lower()
+                if any(kw in text for kw in ["contact", "about", "reach", "enquir"]):
+                    href = a["href"]
+                    if href.startswith("http") and not is_blocked(href):
+                        pages_to_visit.append(href)
+                        break
+            # Extract emails and phones from homepage
+            _extract_from_soup(soup, emails, phones)
+    except Exception:
+        pass
 
-            text = soup.get_text()
-            email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-            for email in re.findall(email_re, text):
-                if not is_junk_email(email) and is_valid_email_format(email):
-                    emails.add(email.lower())
-
-            for script in soup.find_all("script"):
-                if script.string:
-                    for email in re.findall(email_re, script.string):
-                        if not is_junk_email(email) and is_valid_email_format(email):
-                            emails.add(email.lower())
-
-            phone_re = r"(?:\+27|0)(?:[ \-]?\d){9,11}"
-            phones.update(re.findall(phone_re, text))
-
+    # Visit one contact page if found
+    if len(pages_to_visit) > 1:
+        try:
+            resp = requests.get(pages_to_visit[1], timeout=10, headers={"User-Agent": "Mozilla/5.0"}, verify=False)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                _extract_from_soup(soup, emails, phones)
         except Exception:
             pass
 
-        time.sleep(0.5)
-
     return emails, phones
 
-def search_email_with_ddg(company_name):
+def _extract_from_soup(soup, emails, phones):
+    email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+    # mailto links
+    for a in soup.find_all("a", href=True):
+        if a["href"].startswith("mailto:"):
+            email = a["href"].replace("mailto:", "").split("?")[0].strip()
+            if is_valid_email_format(email) and not is_junk_email(email):
+                emails.add(email.lower())
+    # visible text
+    text = soup.get_text()
+    for email in re.findall(email_re, text):
+        if is_valid_email_format(email) and not is_junk_email(email):
+            emails.add(email.lower())
+    # script tags
+    for script in soup.find_all("script"):
+        if script.string:
+            for email in re.findall(email_re, script.string):
+                if is_valid_email_format(email) and not is_junk_email(email):
+                    emails.add(email.lower())
+    # phone numbers
+    phone_re = r"(?:\+27|0)(?:[ \-]?\d){9,11}"
+    phones.update(re.findall(phone_re, text))
+
+def search_email_with_google(company_name):
     emails = set()
     query = f"{company_name} email"
     try:
-        with DDGS() as ddgs:
-            results = ddgs.text(query, max_results=5)
-            for res in results:
-                snippet = res.get("body", "") + " " + res.get("title", "")
-                email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-                for email in re.findall(email_re, snippet):
-                    if not is_junk_email(email):
-                        emails.add(email.lower())
+        results = list(google_search(query, num_results=3, sleep_interval=1))
+        for res in results:
+            snippet = res
+            email_re = r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+            for email in re.findall(email_re, snippet):
+                if is_valid_email_format(email) and not is_junk_email(email):
+                    emails.add(email.lower())
     except Exception as e:
-        print(f"  DDG email search error: {e}")
+        print(f"  Google email search error: {e}")
     return emails
 
 def scrape_companies():
@@ -189,12 +193,10 @@ def scrape_companies():
             continue
         print(f"Scraping: {url}")
         emails, phones = extract_emails_phones(url)
-
         if not emails:
             company_name = url.split("//")[-1].split("/")[0].replace("www.", "").split(".")[0]
-            print(f"  No email on website, searching DDG for {company_name}...")
-            emails = search_email_with_ddg(company_name)
-
+            print(f"  No email on website, trying Google search...")
+            emails = search_email_with_google(company_name)
         email = ""
         if emails:
             email = next(iter(emails))
@@ -202,10 +204,9 @@ def scrape_companies():
             domain = url.split("//")[-1].split("/")[0].replace("www.", "")
             for prefix in ["info", "hello", "contact", "admin", "enquiries"]:
                 guessed = f"{prefix}@{domain}"
-                if re.match(r"[^@]+@[^@]+\.[^@]+", guessed) and not is_junk_email(guessed):
+                if is_valid_email_format(guessed) and not is_junk_email(guessed):
                     email = guessed
                     break
-
         phone = next(iter(phones), "")
         company_name = url.split("//")[-1].split("/")[0].replace("www.", "").split(".")[0]
         data.append({

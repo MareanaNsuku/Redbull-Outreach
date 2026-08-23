@@ -14,7 +14,6 @@ GMAIL_SMTP_PORT = 587
 
 # ---------- Scraping Settings (Cape Town focused, NO food/beverage) ----------
 SEARCH_QUERIES = [
-    # Automotive & Dealerships
     "automotive companies Cape Town contact",
     "car dealership Cape Town contact email",
     "vehicle dealership Cape Town contact",
@@ -36,36 +35,25 @@ SEARCH_QUERIES = [
     "engine rebuild Cape Town",
     "gearbox repair Cape Town",
     "suspension specialist Cape Town",
-    # Logistics & Transport (vehicle-related)
-    "delivery companies Cape Town contact",
-    "logistics companies Cape Town email",
-    "courier services Cape Town contact",
-    "transport and logistics Cape Town contact",
-    "vehicle logistics Cape Town",
-    "fleet management Cape Town contact",
-    "trucking company Cape Town contact",
-    # Motorsport & Driving
     "motorsport companies Cape Town contact",
-    "motorsport team Cape Town",
     "racing team Cape Town contact",
     "karting track Cape Town",
     "driving school Cape Town contact",
     "car club Cape Town contact",
-    # Vehicle Customisation & Maintenance
     "vehicle branding Cape Town",
     "car wrap Cape Town contact",
     "automotive parts supplier Cape Town",
     "auto body repair Cape Town email",
     "workshop equipment supplier Cape Town",
     "safety gear supplier Cape Town",
-    # Sports & Sponsorship
     "sports marketing agency Cape Town",
     "sports sponsorship Cape Town",
     "event sponsorship Cape Town"
 ]
-MAX_COMPANIES_PER_RUN = 100
-REQUEST_TIMEOUT = 15
-DELAY_BETWEEN_REQUESTS = 1
+]
+MAX_COMPANIES_PER_RUN = 50
+REQUEST_TIMEOUT = 10
+DELAY_BETWEEN_REQUESTS = 2
 
 # ---------- Output File ----------
 CSV_FILE = "companies.csv"
