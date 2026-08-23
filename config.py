@@ -35,7 +35,15 @@ SEARCH_QUERIES = [
     "engine rebuild Cape Town",
     "gearbox repair Cape Town",
     "suspension specialist Cape Town",
+    "delivery companies Cape Town contact",
+    "logistics companies Cape Town email",
+    "courier services Cape Town contact",
+    "transport and logistics Cape Town contact",
+    "vehicle logistics Cape Town",
+    "fleet management Cape Town contact",
+    "trucking company Cape Town contact",
     "motorsport companies Cape Town contact",
+    "motorsport team Cape Town",
     "racing team Cape Town contact",
     "karting track Cape Town",
     "driving school Cape Town contact",
@@ -49,7 +57,6 @@ SEARCH_QUERIES = [
     "sports marketing agency Cape Town",
     "sports sponsorship Cape Town",
     "event sponsorship Cape Town"
-]
 ]
 MAX_COMPANIES_PER_RUN = 50
 REQUEST_TIMEOUT = 10
