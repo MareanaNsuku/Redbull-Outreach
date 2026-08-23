@@ -18,7 +18,11 @@ def main():
             print(f"No email for {company}, marking as 'No email'.")
             continue
 
-        status = send_email(email, company, website)
+        try:
+            status = send_email(email, company, website)
+        except Exception as e:
+            print(f"ERROR sending to {email}: {e}")
+            status = "Failed"
         df.at[idx, "emailed"] = status
 
     df.to_csv(CSV_FILE, index=False)

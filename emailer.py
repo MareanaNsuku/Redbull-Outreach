@@ -29,7 +29,7 @@ def is_valid_email_format(email):
     return True
 MAX_RETRIES = 2
 RETRY_DELAY = 5
-DAILY_LIMIT = 300  # lower to avoid Gmail over-limit
+DAILY_LIMIT = 200  # lower to avoid Gmail over-limit
 
 sent_count = 0
 
@@ -150,3 +150,12 @@ def send_email(to_email, company_name, website):
 
     print(f"  All providers failed for {to_email}")
     return "Failed"
+
+
+def safe_send_email(to_email, company_name, website):
+    """Call send_email but never raise."""
+    try:
+        return send_email(to_email, company_name, website)
+    except Exception as e:
+        print(f"Unhandled error in send_email for {to_email}: {e}")
+        return "Failed"
