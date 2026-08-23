@@ -109,3 +109,6 @@ ATTACHMENTS = [
 
 # ---------- CC Recipient ----------
 CC_EMAIL = "katlegomalogadithare@gmail.com"
+
+# ---------- Seed Companies (optional) ----------
+SEED_COMPANIES = []
