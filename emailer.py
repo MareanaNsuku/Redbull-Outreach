@@ -29,7 +29,7 @@ def is_valid_email_format(email):
     return True
 MAX_RETRIES = 2
 RETRY_DELAY = 5
-DAILY_LIMIT = 200  # lower to avoid Gmail over-limit
+DAILY_LIMIT = 150  # lower to avoid Gmail over-limit
 
 sent_count = 0
 

@@ -58,9 +58,9 @@ SEARCH_QUERIES = [
     "sports sponsorship Cape Town",
     "event sponsorship Cape Town"
 ]
-MAX_COMPANIES_PER_RUN = 50
-REQUEST_TIMEOUT = 10
-DELAY_BETWEEN_REQUESTS = 2
+MAX_COMPANIES_PER_RUN = 40
+REQUEST_TIMEOUT = 12
+DELAY_BETWEEN_REQUESTS = 3
 
 # ---------- Output File ----------
 CSV_FILE = "companies.csv"
