@@ -41,7 +41,7 @@ JUNK_EMAIL_DOMAINS = [
     "example.com", "email.com", "mail.com", "facebook.com", "google.com",
     "wikipedia.org", "youtube.com", "linkedin.com", "twitter.com",
     "sentry.io", "wixpress.com", "shopify.com", "wordpress.com",
-    "godaddy.com", "domain.com", "webmaster.com", "mysite.com",
+    "godaddy.com", "domain.com", "webmaster.com", "wordpress.org", "outlook.com", "mysite.com",
     "test.com", "sample.com", "mailinator.com", "10minutemail.com",
     "guerrillamail.com", "temp-mail.org", "throwawaymail.com",
     "dispostable.com", "yopmail.com", "getnada.com", "sharklasers.com",
@@ -68,30 +68,31 @@ def is_junk_email(email):
     return False
 
 def is_valid_email_format(email):
+    import re
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
-    # Basic format checks
-    if " " in email or email.count("@") != 1:
+    if ' ' in email or email.count('@') != 1:
         return False
-    local, domain = email.split("@")
-    if not local or not domain or "." not in domain:
+    local, domain = email.split('@')
+    if not local or not domain or '.' not in domain:
         return False
-    if len(domain.split(".")[-1]) < 2:
+    # Reject any percent signs or URL encoding
+    if '%' in email:
         return False
-    # Reject obvious placeholder local parts
+    # Allowed TLDs (last part)
+    tld = domain.split('.')[-1]
+    if not re.match(r'^[a-z]{2,4}$', tld):
+        return False
+    # Reject local parts that start with digits followed by keywords
     placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
     for ph in placeholders:
         if ph in local:
             return False
-    # Reject local parts that start with 2+ digits followed by common words (e.g., 7440info)
-    if re.match(r'^\d{2,}(info|sales|admin|support|contact|hello|enquiries)', local):
-        return False
-    # Reject if local part ends with a digit+word concatenation like 'info@domain' in local? Actually multiple @ already handled.
-    # Reject if domain contains a second domain-like pattern (e.g., 'elmejortrato.comwe')
-    if re.search(r'\.[a-z]{2,}\.[a-z]{2,}$', domain):
+    if re.match(r'^\d{2,}', local):
         return False
     return True
+
 
 def find_company_websites():
     domains = set()

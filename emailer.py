@@ -11,7 +11,7 @@ from config import *
 
 
 def is_valid_email_format(email):
-    """Return True if email looks valid."""
+    import re
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
@@ -20,16 +20,22 @@ def is_valid_email_format(email):
     local, domain = email.split('@')
     if not local or not domain or '.' not in domain:
         return False
-    if len(domain.split('.')[-1]) < 2:
+    # Reject any percent signs or URL encoding
+    if '%' in email:
         return False
-    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe']
+    # Allowed TLDs (last part)
+    tld = domain.split('.')[-1]
+    if not re.match(r'^[a-z]{2,4}$', tld):
+        return False
+    # Reject local parts that start with digits followed by keywords
+    placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
     for ph in placeholders:
         if ph in local:
             return False
+    if re.match(r'^\d{2,}', local):
+        return False
     return True
-MAX_RETRIES = 2
-RETRY_DELAY = 5
-DAILY_LIMIT = 150  # lower to avoid Gmail over-limit
+
 
 sent_count = 0
 
