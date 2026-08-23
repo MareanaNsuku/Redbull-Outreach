@@ -8,6 +8,7 @@ import random
 import os
 import pandas as pd
 import urllib3
+from urllib.parse import urlparse
 from config import SEARCH_QUERIES, MAX_COMPANIES_PER_RUN, REQUEST_TIMEOUT, DELAY_BETWEEN_REQUESTS, CSV_FILE, SEED_COMPANIES
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -94,12 +95,25 @@ def is_valid_email_format(email):
     return True
 
 
+
+
+def normalize_url(url):
+    """Return canonical base URL: scheme + netloc, no path, no www."""
+    try:
+        parsed = urlparse(url.strip().lower())
+        netloc = parsed.netloc
+        if netloc.startswith('www.'):
+            netloc = netloc[4:]
+        return f"{parsed.scheme}://{netloc}"
+    except Exception:
+        return url.strip().lower()
+
 def find_company_websites():
     domains = set()
     # Add seed companies first
     for url in SEED_COMPANIES:
         if url and not is_blocked(url):
-            domains.add(url)
+            domains.add(normalize_url(url))
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
@@ -110,7 +124,7 @@ def find_company_websites():
                         url = res.get("href")
                         if url and not is_blocked(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                domains.add(url)
+                                domains.add(normalize_url(url))
                 else:
                     print("  DDG no results, trying Google...")
                     try:
@@ -118,7 +132,7 @@ def find_company_websites():
                         for url in gresults:
                             if url and not is_blocked(url):
                                 if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                    domains.add(url)
+                                    domains.add(normalize_url(url))
                     except Exception as e:
                         print(f"  Google fallback error: {e}")
             except Exception as e:
@@ -128,7 +142,7 @@ def find_company_websites():
                     for url in gresults:
                         if url and not is_blocked(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                domains.add(url)
+                                domains.add(normalize_url(url))
                 except Exception as e:
                     print(f"  Google fallback error: {e}")
             time.sleep(5 + random.uniform(0, 3))
@@ -213,7 +227,7 @@ def scrape_companies():
     existing_df = None
     if os.path.exists(CSV_FILE):
         existing_df = pd.read_csv(CSV_FILE)
-        existing_urls = set(existing_df["website"].tolist())
+        existing_urls = set(existing_df["website"].apply(normalize_url).tolist())
     else:
         existing_urls = set()
 
