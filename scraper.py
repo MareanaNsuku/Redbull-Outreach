@@ -20,7 +20,20 @@ BLOCKED_DOMAINS = [
     "brabys", "hotfrog", "snupit", "trustlink", "africanadvice",
     "findglocal", "shopshours", "capetourism", "autoyas", "infoisinfo",
     "d7leadfinder", "aeroleads", "lusha", "contactout", "dnb.com",
-    "bing.com", "goodfirms", "fiata.org", "cargoyellowpages", "buzzsouthafrica"
+    "bing.com", "goodfirms", "fiata.org", "cargoyellowpages", "buzzsouthafrica",
+    "hellopeter.com", "cybo.com", "elmejortrato.com", "panelbeatersdirectory.co.za",
+    "towingdirectory.co.za", "drivingschoolfinder.co.za", "quotesadvisor.com",
+    "netpages.co.za", "fyple.co.za", "brabys.com", "hotfrog.co.za",
+    "snupit.co.za", "trustlink.co.za", "africanadvice.com", "findglocal.com",
+    "shopshours.co.za", "capetourism.com", "autoyas.com", "infoisinfo.co.za",
+    "d7leadfinder.com", "aeroleads.com", "lusha.com", "contactout.com",
+    "dnb.com", "bing.com", "goodfirms.co", "fiata.org", "cargoyellowpages.com",
+    "buzzsouthafrica.com", "netpages.co.za", "fyple.co.za", "brabys.com",
+    "hotfrog.co.za", "snupit.co.za", "trustlink.co.za", "africanadvice.com",
+    "findglocal.com", "shopshours.co.za", "capetourism.com", "autoyas.com",
+    "infoisinfo.co.za", "d7leadfinder.com", "aeroleads.com", "lusha.com",
+    "contactout.com", "dnb.com", "bing.com", "goodfirms.co", "fiata.org",
+    "cargoyellowpages.com", "buzzsouthafrica.com"
 ]
 BLOCKED_PATTERNS = [re.compile(d, re.IGNORECASE) for d in BLOCKED_DOMAINS]
 
@@ -31,7 +44,13 @@ JUNK_EMAIL_DOMAINS = [
     "godaddy.com", "domain.com", "webmaster.com", "mysite.com",
     "test.com", "sample.com", "mailinator.com", "10minutemail.com",
     "guerrillamail.com", "temp-mail.org", "throwawaymail.com",
-    "dispostable.com", "yopmail.com", "getnada.com", "sharklasers.com"
+    "dispostable.com", "yopmail.com", "getnada.com", "sharklasers.com",
+    "hellopeter.com", "cybo.com", "elmejortrato.com", "netpages.co.za",
+    "panelbeatersdirectory.co.za", "towingdirectory.co.za", "drivingschoolfinder.co.za",
+    "quotesadvisor.com", "infoisinfo.co.za", "findglocal.com", "shopshours.co.za",
+    "autoyas.com", "fyple.co.za", "brabys.com", "hotfrog.co.za",
+    "snupit.co.za", "trustlink.co.za", "africanadvice.com", "d7leadfinder.com",
+    "aeroleads.com", "lusha.com", "contactout.com", "dnb.com", "goodfirms.co"
 ]
 JUNK_EMAIL_PATTERNS = [re.compile(d, re.IGNORECASE) for d in JUNK_EMAIL_DOMAINS]
 
@@ -52,6 +71,7 @@ def is_valid_email_format(email):
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
+    # Basic format checks
     if " " in email or email.count("@") != 1:
         return False
     local, domain = email.split("@")
@@ -59,10 +79,18 @@ def is_valid_email_format(email):
         return False
     if len(domain.split(".")[-1]) < 2:
         return False
+    # Reject obvious placeholder local parts
     placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
     for ph in placeholders:
         if ph in local:
             return False
+    # Reject local parts that start with 2+ digits followed by common words (e.g., 7440info)
+    if re.match(r'^\d{2,}(info|sales|admin|support|contact|hello|enquiries)', local):
+        return False
+    # Reject if local part ends with a digit+word concatenation like 'info@domain' in local? Actually multiple @ already handled.
+    # Reject if domain contains a second domain-like pattern (e.g., 'elmejortrato.comwe')
+    if re.search(r'\.[a-z]{2,}\.[a-z]{2,}$', domain):
+        return False
     return True
 
 def find_company_websites():
