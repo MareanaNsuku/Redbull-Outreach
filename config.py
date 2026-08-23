@@ -14,38 +14,12 @@ GMAIL_SMTP_PORT = 587
 
 # ---------- Scraping Settings (Cape Town focused) ----------
 SEARCH_QUERIES = [
-    # Logistics & Transport (existing)
+    # Automotive Dealerships & Services
     "automotive companies Cape Town contact",
     "car dealership Cape Town contact email",
-    "delivery companies Cape Town contact",
-    "logistics companies Cape Town email",
-    "courier services Cape Town contact",
-    "transport and logistics Cape Town contact",
-    # Automotive & Motorsport
-    "motorsport companies Cape Town contact",
-    "vehicle branding Cape Town",
-    "car wrap Cape Town contact",
-    "automotive parts supplier Cape Town",
+    "vehicle dealership Cape Town contact",
     "truck dealership Cape Town contact",
-    "vehicle graphics Cape Town",
-    # Workshop & Safety
-    "workshop equipment supplier Cape Town",
-    "safety gear supplier Cape Town",
-    "engineering workshop Cape Town",
-    "tool supplier Cape Town",
-    # Manufacturing & Engineering
-    "manufacturing companies Cape Town contact",
-    "engineering companies Cape Town email",
-    "metal fabrication Cape Town",
-    # Sports & Sponsorship
-    "sports marketing agency Cape Town",
-    "sports sponsorship Cape Town",
-    "event sponsorship Cape Town",
-    # Food & Beverage (energy drinks)
-    "energy drink distributor Cape Town",
-    "beverage company Cape Town contact",
-    "fitness supplement Cape Town"
-    # Additional automotive / driving / sports companies
+    "car rental agency Cape Town contact",
     "car service Cape Town contact",
     "tyre fitment Cape Town contact",
     "car audio Cape Town",
@@ -53,16 +27,6 @@ SEARCH_QUERIES = [
     "car wash Cape Town contact",
     "auto glass Cape Town",
     "vehicle tracking Cape Town",
-    "fleet management Cape Town contact",
-    "karting track Cape Town",
-    "motorsport team Cape Town",
-    "motorcycle dealership Cape Town contact",
-    "trucking company Cape Town contact",
-    "caravan dealer Cape Town",
-    "trailer dealer Cape Town",
-    "vehicle testing Cape Town",
-    "road safety Cape Town",
-    "vehicle inspection Cape Town",
     "automotive finance Cape Town",
     "automotive insurance Cape Town",
     "car recovery Cape Town",
@@ -72,9 +36,32 @@ SEARCH_QUERIES = [
     "engine rebuild Cape Town",
     "gearbox repair Cape Town",
     "suspension specialist Cape Town",
-    "car rental agency Cape Town contact",
-    "car club Cape Town contact"
-
+    # Logistics & Transport (vehicle-related)
+    "delivery companies Cape Town contact",
+    "logistics companies Cape Town email",
+    "courier services Cape Town contact",
+    "transport and logistics Cape Town contact",
+    "vehicle logistics Cape Town",
+    "fleet management Cape Town contact",
+    "trucking company Cape Town contact",
+    # Motorsport & Driving
+    "motorsport companies Cape Town contact",
+    "motorsport team Cape Town",
+    "racing team Cape Town contact",
+    "karting track Cape Town",
+    "driving school Cape Town contact",
+    "car club Cape Town contact",
+    # Vehicle Customisation & Maintenance
+    "vehicle branding Cape Town",
+    "car wrap Cape Town contact",
+    "automotive parts supplier Cape Town",
+    "auto body repair Cape Town email",
+    "workshop equipment supplier Cape Town",
+    "safety gear supplier Cape Town",
+    # Sports & Sponsorship
+    "sports marketing agency Cape Town",
+    "sports sponsorship Cape Town",
+    "event sponsorship Cape Town"
 ]
 MAX_COMPANIES_PER_RUN = 100
 # ---------- Seed Companies (known Cape Town companies) ----------
