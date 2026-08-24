@@ -43,7 +43,7 @@ JUNK_EMAIL_DOMAINS = [
 # ---------- Global constants ----------
 MAX_RETRIES = 2
 RETRY_DELAY = 5
-DAILY_LIMIT = 150   # maximum emails per run, keeps us under Gmail's daily cap
+DAILY_LIMIT = 450   # maximum emails per run, keeps us under Gmail's daily cap
 
 sent_count = 0
 
