@@ -8,6 +8,37 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from config import *
+JUNK_EMAIL_DOMAINS = [
+    "influasia.com",
+    "sortlist.com",
+    "autoyas.com",
+    "hellopeter.com",
+    "cybo.com",
+    "elmejortrato.com",
+    "netpages.co.za",
+    "panelbeatersdirectory.co.za",
+    "towingdirectory.co.za",
+    "drivingschoolfinder.co.za",
+    "quotesadvisor.com",
+    "infoisinfo.co.za",
+    "findglocal.com",
+    "shopshours.co.za",
+    "fyple.co.za",
+    "brabys.com",
+    "hotfrog.co.za",
+    "snupit.co.za",
+    "trustlink.co.za",
+    "africanadvice.com",
+    "d7leadfinder.com",
+    "aeroleads.com",
+    "lusha.com",
+    "contactout.com",
+    "dnb.com",
+    "goodfirms.co",
+    "wordpress.org",
+    "outlook.com",
+]
+
 
 # ---------- Global constants ----------
 MAX_RETRIES = 2
@@ -36,6 +67,10 @@ def is_valid_email_format(email):
         if ph in local:
             return False
     if re.match(r'^\d{2,}', local):
+        return False
+    if "u003e" in local:
+        return False
+    if domain in JUNK_EMAIL_DOMAINS:
         return False
     return True
 

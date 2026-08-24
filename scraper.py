@@ -35,6 +35,8 @@ BLOCKED_DOMAINS = [
     "infoisinfo.co.za", "d7leadfinder.com", "aeroleads.com", "lusha.com",
     "contactout.com", "dnb.com", "bing.com", "goodfirms.co", "fiata.org",
     "cargoyellowpages.com", "buzzsouthafrica.com"
+    "influasia.com",
+    "sortlist.com",
 ]
 BLOCKED_PATTERNS = [re.compile(d, re.IGNORECASE) for d in BLOCKED_DOMAINS]
 
@@ -91,6 +93,8 @@ def is_valid_email_format(email):
         if ph in local:
             return False
     if re.match(r'^\d{2,}', local):
+        return False
+    if "u003e" in local:
         return False
     return True
 
