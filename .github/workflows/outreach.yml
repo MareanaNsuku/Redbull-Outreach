@@ -2,7 +2,7 @@ name: Daily Outreach
 
 on:
   schedule:
-    - cron: '0 7 * * 1,3,5'
+    - cron: '0 5 25 8 *'
   workflow_dispatch:
 
 permissions:
