@@ -165,4 +165,41 @@ ATTACHMENTS = [
 CC_EMAIL = "katlegomalogadithare@gmail.com"
 
 # ---------- Seed Companies (optional) ----------
-SEED_COMPANIES = []
+SEED_COMPANIES = [
+    "https://www.cars.co.za",
+    "https://www.autotrader.co.za",
+    "https://www.motus.co.za",
+    "https://www.barloworld.com",
+    "https://www.imperial.co.za",
+    "https://www.supaquick.com",
+    "https://www.hiq.co.za",
+    "https://www.bestdrive.co.za",
+    "https://www.twt.co.za",
+    "https://www.netstar.co.za",
+    "https://www.tracker.co.za",
+    "https://www.cartrack.co.za",
+    "https://www.cds.co.za",
+    "https://www.fastway.co.za",
+    "https://www.thecourierguy.co.za",
+    "https://www.dawnwing.co.za",
+    "https://www.dpd.com/za",
+    "https://www.dsv.com/en-za",
+    "https://www.dhl.com/za-en",
+    "https://www.bidvest.co.za",
+    "https://collivery.net",
+    "https://www.bex.co.za",
+    "https://www.aerospeed.co.za",
+    "https://www.citisprint.co.za",
+    "https://www.intertown.co.za",
+    "https://www.kempston.co.za",
+    "https://www.millstockcars.co.za",
+    "https://www.avautos.co.za",
+    "https://www.pioneerfreight.co.za",
+    "https://www.liebenlogistics.co.za",
+    "https://www.sekologistics.com",
+    "https://www.gracecouriers.co.za",
+    "https://www.tlc-logistics.co.za",
+    "https://www.ontrackautoservices.co.za",
+    "https://www.smikemotors.co.za",
+    "https://www.automotivex.co.za"
+]
