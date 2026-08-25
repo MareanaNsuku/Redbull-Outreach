@@ -4,6 +4,7 @@ import os
 GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
 BREVO_SMTP_USER = os.environ.get("BREVO_SMTP_USER")
 BREVO_SMTP_PASSWORD = os.environ.get("BREVO_SMTP_PASSWORD")
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 
 # ---------- SMTP Settings ----------
@@ -12,7 +13,7 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings (Cape Town focused, NO food/beverage) ----------
+# ---------- Scraping Settings ----------
 SEARCH_QUERIES = [
     # Automotive Dealerships & Sales
     "car dealership Cape Town",
@@ -116,10 +117,10 @@ SEARCH_QUERIES = [
     "car dealership Claremont",
     "car dealership Wynberg"
 ]
-]
-MAX_COMPANIES_PER_RUN = 400
-REQUEST_TIMEOUT = 10
-DELAY_BETWEEN_REQUESTS = 1
+
+MAX_COMPANIES_PER_RUN = 40
+REQUEST_TIMEOUT = 12
+DELAY_BETWEEN_REQUESTS = 3
 
 # ---------- Output File ----------
 CSV_FILE = "companies.csv"
@@ -164,7 +165,7 @@ ATTACHMENTS = [
 # ---------- CC Recipient ----------
 CC_EMAIL = "katlegomalogadithare@gmail.com"
 
-# ---------- Seed Companies (optional) ----------
+# ---------- Seed Companies ----------
 SEED_COMPANIES = [
     "https://www.cars.co.za",
     "https://www.autotrader.co.za",
