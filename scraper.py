@@ -258,7 +258,7 @@ def scrape_companies():
         company_name = url.split("//")[-1].split("/")[0].replace("www.", "").split(".")[0]
         data.append({
             "company_name": company_name,
-            "website": url,
+            "website": normalize_url(url),
             "email": email,
             "phone": phone,
             "date_added": pd.Timestamp.now().strftime("%Y-%m-%d"),
