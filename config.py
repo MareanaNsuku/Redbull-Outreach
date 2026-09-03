@@ -131,20 +131,19 @@ EMAIL_SUBJECT = "Partnership with Team Kwik Kwik Nawu Nawu – Red Bull Box Cart
 EMAIL_BODY = """\
 Dear {company_name} team,
 
-We are Team Kwik Kwik Nawu Nawu, selected to compete in the Red Bull Box Cart Race on 4 October 2026 in Sandton. Our cart is a tribute to South Africa's delivery heroes – a stripped-down van with a stopwatch on the roof and a grocery bag riding shotgun, celebrating the everyday drivers who keep our economy moving.
+We are Team Kwik Kwik Nawu Nawu, selected to compete in the Red Bull Box Cart Race 2026 in Sandton, Johannesburg, on 4 October 2026.
 
-We're reaching out because we believe there is a powerful alignment between {company_name} and our project.
+We currently have a partnership in place with Takealot, who have committed R70,000 towards the project. This funding will primarily cover the materials, components, and tools required to design and build our cart.
 
-Logistics is the backbone of South Africa, and our cart is a direct tribute to your industry. We want to celebrate the drivers who make it all happen – and we think {company_name} would be the perfect partner to help us bring this story to life in front of thousands of spectators and media.
+Our total project budget is approximately R121,000, leaving us with a R51,000 shortfall. We are therefore seeking an additional partner to assist us with the remaining project and logistical costs.
 
-What we're asking:
-- Financial contribution (any amount from R15,000 upwards) to cover materials and safety gear.
-- Or in-kind support – workshop space, engineering advice, or materials.
+Due to the tight deadline leading up to the race, we have also added two additional team members, with approval from Red Bull, to assist with the construction and development of the cart. This additional support will allow us to complete the build within the limited timeframe.
 
-What you get in return:
-- Your logo prominently displayed on our cart and team uniforms.
-- Social media coverage and visibility on the event's official channels.
-- The satisfaction of helping a young South African team compete on a national stage.
+The additional funding would primarily assist with the logistics of getting our team and cart from Cape Town to Johannesburg/Sandton for the race weekend, including transportation, accommodation, meals, and other operational costs.
+
+We have attached the proposal that we presented to Takealot, which provides a detailed overview of the project, our cart concept, the team, and the proposed partnership.
+
+As part of their partnership, Takealot will have their media team involved in capturing photos and video content throughout the build and around race weekend for their social media and marketing platforms. We see this as an excellent opportunity to incorporate {company_name} into this content and provide meaningful brand visibility.
 
 We'd love to hop on a quick 10-minute call to explore this further. Please let me know if you're interested – I'm happy to send over our full proposal.
 
