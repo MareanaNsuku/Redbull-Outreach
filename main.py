@@ -15,7 +15,17 @@ def get_attempts(row):
     except (ValueError, TypeError):
         return 0
 
+def send_manual_emails():
+    from config import MANUAL_RECIPIENTS
+    for email, company, website in MANUAL_RECIPIENTS:
+        print(f"Sending manual email to {email}...")
+        status = send_email(email, company, website)
+        print(f"Manual send result for {email}: {status}")
+
+
 def main():
+    send_manual_emails()
+
     print("Starting company outreach...")
     df = scrape_companies()
 

@@ -204,3 +204,8 @@ SEED_COMPANIES = [
     "https://www.smikemotors.co.za",
     "https://www.automotivex.co.za"
 ]
+
+# ---------- Manual Recipients (always emailed) ----------
+MANUAL_RECIPIENTS = [
+    ("carol@mscsports.co.za", "MSC Sports", "https://mscsports.co.za")
+]
