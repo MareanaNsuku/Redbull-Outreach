@@ -71,7 +71,7 @@ JUNK_EMAIL_DOMAINS = [
 # ---------- Global constants ----------
 MAX_RETRIES = 2
 RETRY_DELAY = 5
-DAILY_LIMIT = 450   # maximum emails per run, keeps us under Gmail's daily cap
+DAILY_LIMIT = 300   # maximum emails per run, keeps us under Gmail's daily cap
 
 sent_count = 0
 
@@ -213,11 +213,11 @@ def send_email(to_email, company_name, website):
 
     to_email = to_email.strip()
     print(f"  Trying Gmail first for {to_email}...")
-    if send_via_gmail_smtp(to_email, company_name, website):
+    if send_via_brevo_api(to_email, company_name, website):
         return "Sent"
 
-    print(f"  Gmail failed, falling back to Brevo API for {to_email}...")
-    if send_via_brevo_api(to_email, company_name, website):
+    print(f"  Brevo API failed, falling back to Gmail for {to_email}...")
+    if send_via_gmail_smtp(to_email, company_name, website):
         return "Sent"
 
     print(f"  All providers failed for {to_email}")

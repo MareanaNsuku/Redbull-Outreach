@@ -158,7 +158,6 @@ Team Captain, Kwik Kwik Nawu Nawu
 ATTACHMENTS = [
     "attachments/RedBull Proposal.pdf",
     "attachments/RBBCR TEAM DETAILS.pdf",
-    "attachments/Delivering-More-Than-Packages-Delivering-Innovation.pptx"
 ]
 
 # ---------- CC Recipient ----------
