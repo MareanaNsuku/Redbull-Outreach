@@ -9,6 +9,15 @@ from email.mime.base import MIMEBase
 from email import encoders
 from config import *
 JUNK_EMAIL_DOMAINS = [
+    "throwawaymail.com",
+    "temp-mail.org",
+    "yopmail.com",
+    "10minutemail.com",
+    "guerrillamail.com",
+    "mailinator.com",
+    "spam.com",
+    "bounces.com",
+    "bounce.com",
     "influasia.com",
     "sortlist.com",
     "autoyas.com",
@@ -69,14 +78,15 @@ JUNK_EMAIL_DOMAINS = [
 
 
 # ---------- Global constants ----------
-MAX_RETRIES = 2
-RETRY_DELAY = 5
+MAX_RETRIES = 3
+RETRY_DELAY = 10
 DAILY_LIMIT = 300   # maximum emails per run, keeps us under Gmail's daily cap
 
 sent_count = 0
 
 def is_valid_email_format(email):
-    """Return True if email looks valid."""
+    """Return True if email looks valid and not likely to bounce."""
+    import re
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
@@ -88,19 +98,22 @@ def is_valid_email_format(email):
     if '%' in email:
         return False
     tld = domain.split('.')[-1]
-    if not re.match(r'^[a-z]{2,4}$', tld):
+    if not re.match(r'^[a-z]{2,10}$', tld):
         return False
-    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe']
-    for ph in placeholders:
-        if ph in local:
+    # Reject placeholder/common junk
+    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe', 'info', 'support', 'contact', 'admin']
+    if local in placeholders:
+        return False
+    # Reject local parts starting with digits or containing many digits
+    if re.match(r'^\d{2,}', local) or len(re.findall(r'\d', local)) > 3:
+        return False
+    # Reject suspicious keywords in domain or local
+    suspicious = ['wixsite', 'wordpress', 'weebly', 'blogspot', 'tumblr', 'site123', 'webnode']
+    for kw in suspicious:
+        if kw in domain or kw in local:
             return False
-    if re.match(r'^\d{2,}', local):
-        return False
-    if "u003e" in local:
-        return False
-    if domain in JUNK_EMAIL_DOMAINS:
-        return False
     return True
+
 
 def send_via_gmail_smtp(to_email, company_name, website):
     """Send email using Gmail SMTP."""

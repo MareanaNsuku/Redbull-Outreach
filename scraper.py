@@ -73,6 +73,9 @@ def is_south_african(url):
 BLOCKED_PATTERNS = [re.compile(d, re.IGNORECASE) for d in BLOCKED_DOMAINS]
 
 JUNK_EMAIL_DOMAINS = [
+    "spam.com",
+    "bounces.com",
+    "bounce.com",
     "example.com", "email.com", "mail.com", "facebook.com", "google.com",
     "wikipedia.org", "youtube.com", "linkedin.com", "twitter.com",
     "sentry.io", "wixpress.com", "shopify.com", "wordpress.com",
@@ -131,6 +134,7 @@ def is_junk_email(email):
     return False
 
 def is_valid_email_format(email):
+    """Return True if email looks valid and not likely to bounce."""
     import re
     if not email or not isinstance(email, str):
         return False
@@ -140,23 +144,25 @@ def is_valid_email_format(email):
     local, domain = email.split('@')
     if not local or not domain or '.' not in domain:
         return False
-    # Reject any percent signs or URL encoding
     if '%' in email:
         return False
-    # Allowed TLDs (last part)
     tld = domain.split('.')[-1]
-    if not re.match(r'^[a-z]{2,4}$', tld):
+    if not re.match(r'^[a-z]{2,10}$', tld):
         return False
-    # Reject local parts that start with digits followed by keywords
-    placeholders = ["example", "test", "user", "jane.doe", "john.doe"]
-    for ph in placeholders:
-        if ph in local:
+    # Reject placeholder/common junk
+    placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe', 'info', 'support', 'contact', 'admin']
+    if local in placeholders:
+        return False
+    # Reject local parts starting with digits or containing many digits
+    if re.match(r'^\d{2,}', local) or len(re.findall(r'\d', local)) > 3:
+        return False
+    # Reject suspicious keywords in domain or local
+    suspicious = ['wixsite', 'wordpress', 'weebly', 'blogspot', 'tumblr', 'site123', 'webnode']
+    for kw in suspicious:
+        if kw in domain or kw in local:
             return False
-    if re.match(r'^\d{2,}', local):
-        return False
-    if "u003e" in local:
-        return False
     return True
+
 
 
 
