@@ -133,13 +133,13 @@ Dear {company_name} team,
 
 We are Team Kwik Kwik Nawu Nawu, selected to compete in the Red Bull Box Cart Race 2026 in Sandton, Johannesburg, on 4 October 2026.
 
-We currently have a partnership in place with Takealot, who have committed R70,000 towards the project. This funding will primarily cover the materials, components, and tools required to design and build our cart.
+We have already purchased our go-kart, and we are excited to share that Takealot has come on board as a partner. Takealot has committed R70,000 towards the project and has also agreed to cover the freight costs to transport the go-kart to Johannesburg.
 
-Our total project budget is approximately R121,000, leaving us with a R51,000 shortfall. We are therefore seeking an additional partner to assist us with the remaining project and logistical costs.
+Our total project budget is approximately R121,000, leaving us with a R51,000 shortfall. We are therefore seeking an additional partner to assist us with the remaining costs, which will be used for additional materials, accommodation, and other necessary race weekend expenses.
 
 Due to the tight deadline leading up to the race, we have also added two additional team members, with approval from Red Bull, to assist with the construction and development of the cart. This additional support will allow us to complete the build within the limited timeframe.
 
-The additional funding would primarily assist with the logistics of getting our team and cart from Cape Town to Johannesburg/Sandton for the race weekend, including transportation, accommodation, meals, and other operational costs.
+The additional funding would primarily assist with accommodation, meals, extra materials, and other operational costs for our team in Johannesburg.
 
 We have attached the proposal that we presented to Takealot, which provides a detailed overview of the project, our cart concept, the team, and the proposed partnership.
 
