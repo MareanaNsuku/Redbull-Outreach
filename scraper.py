@@ -180,42 +180,39 @@ def normalize_url(url):
 
 def find_company_websites():
     domains = set()
-    # Add seed companies first
-    for url in SEED_COMPANIES:
-        if url and not is_blocked(url) and is_south_african(url):
-            domains.add(normalize_url(url))
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
-            try:
-                results = list(ddgs.text(query, max_results=8))
-                if results:
-                    for res in results:
-                        url = res.get("href")
-                        if url and not is_blocked(url) and is_south_african(url):
-                            if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                domains.add(normalize_url(url))
-                else:
-                    print("  DDG no results, trying Google...")
-                    try:
-                        gresults = list(google_search(query, num_results=5, sleep_interval=1))
-                        for url in gresults:
-                            if url and not is_blocked(url) and is_south_african(url):
-                                if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                    domains.add(normalize_url(url))
-                    except Exception as e:
-                        print(f"  Google fallback error: {e}")
-            except Exception as e:
-                print(f"  DDG error: {e}, trying Google...")
+            success = False
+            # Try DDG up to 3 times with backoff
+            for attempt in range(3):
                 try:
-                    gresults = list(google_search(query, num_results=5, sleep_interval=1))
+                    results = ddgs.text(query, max_results=8)
+                    if results:
+                        for res in results:
+                            url = res.get("href")
+                            if url and not is_blocked(url) and is_south_african(url):
+                                domains.add(normalize_url(url))
+                        success = True
+                        break
+                    else:
+                        print(f"  DDG no results (attempt {attempt+1}), waiting...")
+                        time.sleep(10 * (attempt + 1))
+                except Exception as e:
+                    print(f"  DDG error (attempt {attempt+1}): {e}")
+                    time.sleep(10 * (attempt + 1))
+            # If DDG failed completely, try Google once
+            if not success:
+                print("  DDG failed, trying Google...")
+                try:
+                    gresults = list(google_search(query, num_results=5, sleep_interval=2))
                     for url in gresults:
                         if url and not is_blocked(url) and is_south_african(url):
-                            if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
-                                domains.add(normalize_url(url))
+                            domains.add(normalize_url(url))
                 except Exception as e:
                     print(f"  Google fallback error: {e}")
-            time.sleep(5 + random.uniform(0, 3))
+            # Longer sleep between queries
+            time.sleep(15 + random.uniform(0, 5))
     return list(domains)[:MAX_COMPANIES_PER_RUN]
 
 def extract_emails_phones(url):
