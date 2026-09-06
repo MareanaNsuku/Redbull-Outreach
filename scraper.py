@@ -150,7 +150,7 @@ def find_company_websites():
         for query in SEARCH_QUERIES:
             print(f"Searching: {query}")
             try:
-                results = list(ddgs.text(query, max_results=8))
+                results = list(ddgs.text(query, max_results=12))
                 if results:
                     for res in results:
                         url = res.get("href")

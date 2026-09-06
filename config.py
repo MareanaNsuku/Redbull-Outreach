@@ -15,11 +15,20 @@ GMAIL_SMTP_PORT = 587
 
 # ---------- Scraping Settings ----------
 SEARCH_QUERIES = [
-    # Automotive Dealerships & Sales
+    # Automotive & Dealerships (existing + more suburbs)
     "car dealership Cape Town",
     "car dealership Bellville",
     "car dealership Parow",
     "car dealership Durbanville",
+    "car dealership Somerset West",
+    "car dealership Stellenbosch",
+    "car dealership Brackenfell",
+    "car dealership Goodwood",
+    "car dealership Table View",
+    "car dealership Milnerton",
+    "car dealership Kuils River",
+    "car dealership Claremont",
+    "car dealership Wynberg",
     "used car dealer Cape Town",
     "used car dealer Bellville",
     "bakkie dealer Cape Town",
@@ -29,7 +38,6 @@ SEARCH_QUERIES = [
     "car sales Bellville",
     "car sales Somerset West",
     "car sales Stellenbosch",
-    "car sales Brackenfell",
     # Car Services & Maintenance
     "car service Cape Town",
     "car service Bellville",
@@ -96,26 +104,30 @@ SEARCH_QUERIES = [
     "car club Cape Town",
     "car club Bellville",
     "motorsport club Cape Town",
-    # Sports & Sponsorship
+    # Sports & Sponsorship (expanded)
     "sports marketing agency Cape Town",
     "sports sponsorship Cape Town",
     "event sponsorship Cape Town",
     "sports sponsorship Bellville",
+    "sponsorship opportunities South Africa",
+    "motorsport sponsorship South Africa",
+    "corporate sponsorship South Africa",
+    "car racing sponsorship South Africa",
+    "automotive sponsorship Cape Town",
+    "logistics sponsorship South Africa",
+    "transport sponsorship South Africa",
+    "business sponsorship Cape Town",
+    "company sponsorship for sports South Africa",
+    "sponsor a team South Africa",
+    "brand sponsorship motorsport South Africa",
     # Workshop & Safety
     "workshop equipment supplier Cape Town",
     "workshop equipment supplier Bellville",
     "safety gear supplier Cape Town",
     "safety gear supplier Bellville",
     "tool supplier Cape Town",
-    "tool supplier Bellville",
-    # Additional Cape Town suburbs
-    "car dealership Goodwood",
-    "car dealership Table View",
-    "car dealership Milnerton",
-    "car dealership Brackenfell",
-    "car dealership Kuils River",
-    "car dealership Claremont",
-    "car dealership Wynberg"
+    "tool supplier Bellville"
+]
 ]
 
 MAX_COMPANIES_PER_RUN = 50
