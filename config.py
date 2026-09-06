@@ -164,9 +164,7 @@ ATTACHMENTS = [
 CC_EMAIL = "katlegomalogadithare@gmail.com"
 
 # ---------- Manual Recipients (always emailed) ----------
-MANUAL_RECIPIENTS = [
-    ("carol@mscsports.co.za", "MSC Sports", "https://mscsports.co.za")
-]
+MANUAL_RECIPIENTS = []
 
 # ---------- Seed Companies (empty – use search only) ----------
 SEED_COMPANIES = []
