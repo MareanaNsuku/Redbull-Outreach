@@ -13,7 +13,7 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings (Red Bull Cart Race relevant) ----------
+# ---------- Scraping Settings (Cape Town automotive focus) ----------
 SEARCH_QUERIES = [
     # Automotive & Racing (Cape Town focused)
     "motorsport Cape Town",
@@ -49,7 +49,6 @@ SEARCH_QUERIES = [
     "motorsport sponsorship Cape Town",
     "event sponsorship Cape Town",
     "sports marketing Cape Town"
-]
 ]
 
 MAX_COMPANIES_PER_RUN = 50
