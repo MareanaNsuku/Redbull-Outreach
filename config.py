@@ -13,9 +13,9 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings (Cape Town automotive focus) ----------
+# ---------- Scraping Settings (Expanded Cape Town automotive focus) ----------
 SEARCH_QUERIES = [
-    # Automotive & Racing (Cape Town focused)
+    # Core automotive & racing
     "motorsport Cape Town",
     "racing team Cape Town",
     "karting Cape Town",
@@ -27,31 +27,98 @@ SEARCH_QUERIES = [
     "car dealership Durbanville",
     "car dealership Parow",
     "car dealership Somerset West",
+    "car dealership Goodwood",
+    "car dealership Table View",
+    "car dealership Milnerton",
+    "car dealership Brackenfell",
+    "car dealership Kuils River",
+    "car dealership Claremont",
+    "car dealership Wynberg",
+    "used car dealer Cape Town",
+    "bakkie dealer Cape Town",
+    "truck dealer Cape Town",
+    "motorcycle dealer Cape Town",
+    "car sales Cape Town",
+    "car sales Bellville",
+    "car sales Somerset West",
+    # Car services & maintenance
+    "car service Cape Town",
+    "car service Bellville",
+    "car service Durbanville",
+    "car service Milnerton",
+    "car service Somerset West",
+    "tyre fitment Cape Town",
+    "tyre fitment Bellville",
+    "tyre fitment Parow",
+    "wheel alignment Cape Town",
+    "suspension specialist Cape Town",
+    "brake repair Cape Town",
+    "clutch repair Cape Town",
+    "gearbox repair Cape Town",
+    "engine reconditioning Cape Town",
+    "auto electrician Cape Town",
+    "auto electrician Bellville",
+    "panel beater Cape Town",
+    "panel beater Bellville",
+    "panel beater Durbanville",
+    "auto body repair Cape Town",
+    "auto body repair Bellville",
+    "car aircon repair Cape Town",
+    "car battery Cape Town",
+    "car wash Cape Town",
+    "auto glass Cape Town",
+    "car audio Cape Town",
+    "car alarm Cape Town",
+    "vehicle tracking Cape Town",
+    # Car parts & accessories
     "car parts Cape Town",
+    "car parts Bellville",
+    "car parts Parow",
+    "auto parts supplier Cape Town",
     "performance parts Cape Town",
-    "automotive accessories Cape Town",
+    "car accessories Cape Town",
+    # Vehicle branding & wraps
     "vehicle branding Cape Town",
+    "vehicle branding Bellville",
     "car wrap Cape Town",
-    # Logistics & Transport (vehicle-related)
+    "car wrap Bellville",
+    "car wrap Durbanville",
+    "sign writing Cape Town",
+    "vehicle graphics Cape Town",
+    # Logistics & transport (vehicle-related)
     "vehicle logistics Cape Town",
     "car transport Cape Town",
     "fleet management Cape Town",
     "vehicle tracking Cape Town",
     "courier company Cape Town",
-    # Engineering & Workshop
+    "delivery company Cape Town",
+    # Engineering & workshop
     "engineering company Cape Town",
     "workshop equipment Cape Town",
     "safety gear supplier Cape Town",
     "tool supplier Cape Town",
     "metal fabrication Cape Town",
-    # Sports & Sponsorship (motorsport/automotive-related)
+    # Sports & sponsorship (motorsport/automotive-related)
     "sports sponsorship Cape Town",
     "motorsport sponsorship Cape Town",
     "event sponsorship Cape Town",
-    "sports marketing Cape Town"
+    "sports marketing Cape Town",
+    "brand sponsorship Cape Town",
+    # Additional Cape Town automotive suburbs / areas
+    "car dealership Fish Hoek",
+    "car dealership Mitchells Plain",
+    "car dealership Khayelitsha",
+    "car dealership Epping",
+    "car dealership Montague Gardens",
+    "car service Epping",
+    "car service Montague Gardens",
+    "tyre fitment Epping",
+    "auto electrician Epping",
+    "panel beater Epping",
+    "auto body repair Montague Gardens"
 ]
 
-MAX_COMPANIES_PER_RUN = 50
+MAX_COMPANIES_PER_RUN = 80
 REQUEST_TIMEOUT = 12
 DELAY_BETWEEN_REQUESTS = 3
 
