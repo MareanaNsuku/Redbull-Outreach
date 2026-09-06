@@ -13,85 +13,56 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings (broad industries, all major cities) ----------
+# ---------- Scraping Settings (Red Bull Cart Race relevant) ----------
 SEARCH_QUERIES = [
-    # Automotive (nationwide)
-    "car dealership Johannesburg",
-    "car dealership Pretoria",
-    "car dealership Durban",
-    "car dealership Cape Town",
-    "truck dealership South Africa",
-    "motorcycle dealership South Africa",
-    "auto parts supplier South Africa",
-    "car rental company South Africa",
+    # Automotive & Racing
+    "motorsport South Africa",
+    "racing team South Africa",
+    "karting South Africa",
+    "go kart South Africa",
+    "car racing sponsorship South Africa",
+    "automotive sponsorship South Africa",
+    "car dealership South Africa",
+    "car parts South Africa",
+    "performance parts South Africa",
+    "automotive accessories South Africa",
+    "vehicle branding South Africa",
+    "car wrap South Africa",
     # Logistics & Transport
     "logistics company South Africa",
     "courier company South Africa",
-    "freight company Johannesburg",
-    "freight company Cape Town",
-    "transport company Pretoria",
+    "freight company South Africa",
+    "transport company South Africa",
     "fleet management South Africa",
     "vehicle tracking South Africa",
-    # Engineering & Manufacturing
+    # Engineering & Workshop
     "engineering company South Africa",
-    "manufacturing company Johannesburg",
-    "manufacturing company Cape Town",
+    "workshop equipment South Africa",
+    "safety gear South Africa",
+    "tool supplier South Africa",
     "metal fabrication South Africa",
-    "workshop equipment supplier South Africa",
-    "safety equipment supplier South Africa",
+    # Sports & Sponsorship
+    "sports sponsorship South Africa",
+    "event sponsorship South Africa",
+    "sports marketing South Africa",
+    "brand sponsorship South Africa",
+    # Media & Marketing
+    "advertising agency South Africa",
+    "marketing agency South Africa",
+    "media company South Africa",
     # Construction & Infrastructure
     "construction company South Africa",
-    "building materials supplier South Africa",
-    "civil engineering South Africa",
-    "infrastructure company South Africa",
-    # Energy & Sustainability
-    "renewable energy company South Africa",
-    "solar company South Africa",
-    "battery supplier South Africa",
-    "energy solutions South Africa",
+    "building materials South Africa",
     # Finance & Insurance
     "vehicle finance South Africa",
     "business insurance South Africa",
-    "corporate finance company South Africa",
-    "investment company South Africa",
-    # Sports & Sponsorship
-    "sports sponsorship South Africa",
-    "motorsport sponsorship South Africa",
-    "event sponsorship South Africa",
-    "corporate sponsorship South Africa",
-    "brand sponsorship South Africa",
-    "sports marketing agency South Africa",
-    # Media & Marketing
-    "advertising agency South Africa",
-    "marketing agency Johannesburg",
-    "marketing agency Cape Town",
-    "media company South Africa",
-    "digital marketing agency South Africa",
-    # Retail & Consumer Brands
-    "retail company South Africa",
-    "consumer goods company South Africa",
-    "beverage company South Africa",
-    "clothing brand South Africa",
-    "sports apparel South Africa",
-    # Technology & IT
-    "technology company South Africa",
-    "IT services South Africa",
-    "software company Johannesburg",
-    "software company Cape Town",
-    # Hospitality & Tourism
-    "hotel group South Africa",
-    "guesthouse Johannesburg",
+    # Hospitality & Accommodation (near race)
     "accommodation Sandton",
-    "travel company South Africa",
-    # Food & Beverage (non-conflicting with Red Bull? avoid energy drinks, but general okay)
-    "restaurant group South Africa",
-    "food company South Africa",
-    "catering company Johannesburg",
-    # General Business
-    "business directory South Africa",
+    "hotel Sandton",
+    "guesthouse Johannesburg",
+    # General South African business
     "top companies South Africa",
-    "sponsorship opportunities South Africa",
-    "partnership opportunities South Africa"
+    "South African businesses sponsorship"
 ]
 
 MAX_COMPANIES_PER_RUN = 50

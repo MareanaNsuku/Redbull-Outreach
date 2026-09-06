@@ -15,6 +15,17 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Directories and low-quality domains to skip
 BLOCKED_DOMAINS = [
+    "growthwheel.com",
+    "imaginationbox.com",
+    "global.yamaha-motor.com",
+    "wixsite.com",
+    "grokipedia.com",
+    "vendorland.com",
+    "slotforum.com",
+    "companiesmarketcap.com",
+    "afdb.org",
+    "yamaha-motor.com",
+    "fedex.com",
     "facebook.com", "linkedin.com", "youtube.com", "wikipedia.org", "tiktok.com",
     "instagram.com", "twitter.com", "pissedconsumer.com", "yelp.com",
     "yellowpages", "yellosa", "infobel", "cylex", "netpages", "fyple",
@@ -38,6 +49,27 @@ BLOCKED_DOMAINS = [
     "influasia.com",
     "sortlist.com",
 ]
+
+# South African domain patterns (accept only these or containing keywords)
+SA_DOMAIN_PATTERNS = [
+    r'\.co\.za$',
+    r'\.org\.za$',
+    r'\.africa$',
+    r'southafrica',
+    r'capetown',
+    r'joburg',
+    r'durban',
+    r'pretoria'
+]
+
+def is_south_african(url):
+    """Return True if URL likely belongs to a South African company."""
+    url_lower = url.lower()
+    for pat in SA_DOMAIN_PATTERNS:
+        if re.search(pat, url_lower):
+            return True
+    return False
+
 BLOCKED_PATTERNS = [re.compile(d, re.IGNORECASE) for d in BLOCKED_DOMAINS]
 
 JUNK_EMAIL_DOMAINS = [
@@ -144,7 +176,7 @@ def find_company_websites():
     domains = set()
     # Add seed companies first
     for url in SEED_COMPANIES:
-        if url and not is_blocked(url):
+        if url and not is_blocked(url) and is_south_african(url):
             domains.add(normalize_url(url))
     with DDGS() as ddgs:
         for query in SEARCH_QUERIES:
@@ -154,7 +186,7 @@ def find_company_websites():
                 if results:
                     for res in results:
                         url = res.get("href")
-                        if url and not is_blocked(url):
+                        if url and not is_blocked(url) and is_south_african(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
                                 domains.add(normalize_url(url))
                 else:
@@ -162,7 +194,7 @@ def find_company_websites():
                     try:
                         gresults = list(google_search(query, num_results=5, sleep_interval=1))
                         for url in gresults:
-                            if url and not is_blocked(url):
+                            if url and not is_blocked(url) and is_south_african(url):
                                 if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
                                     domains.add(normalize_url(url))
                     except Exception as e:
@@ -172,7 +204,7 @@ def find_company_websites():
                 try:
                     gresults = list(google_search(query, num_results=5, sleep_interval=1))
                     for url in gresults:
-                        if url and not is_blocked(url):
+                        if url and not is_blocked(url) and is_south_african(url):
                             if any(x in url for x in [".co.za", ".com", ".org", ".net"]) and "search" not in url:
                                 domains.add(normalize_url(url))
                 except Exception as e:
