@@ -13,121 +13,85 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings ----------
+# ---------- Scraping Settings (broad industries, all major cities) ----------
 SEARCH_QUERIES = [
-    # Automotive & Dealerships (existing + more suburbs)
+    # Automotive (nationwide)
+    "car dealership Johannesburg",
+    "car dealership Pretoria",
+    "car dealership Durban",
     "car dealership Cape Town",
-    "car dealership Bellville",
-    "car dealership Parow",
-    "car dealership Durbanville",
-    "car dealership Somerset West",
-    "car dealership Stellenbosch",
-    "car dealership Brackenfell",
-    "car dealership Goodwood",
-    "car dealership Table View",
-    "car dealership Milnerton",
-    "car dealership Kuils River",
-    "car dealership Claremont",
-    "car dealership Wynberg",
-    "used car dealer Cape Town",
-    "used car dealer Bellville",
-    "bakkie dealer Cape Town",
-    "truck dealer Cape Town",
-    "motorcycle dealer Cape Town",
-    "car sales Cape Town",
-    "car sales Bellville",
-    "car sales Somerset West",
-    "car sales Stellenbosch",
-    # Car Services & Maintenance
-    "car service Cape Town",
-    "car service Bellville",
-    "car service Durbanville",
-    "car service Milnerton",
-    "car service Somerset West",
-    "tyre fitment Cape Town",
-    "tyre fitment Bellville",
-    "tyre fitment Parow",
-    "wheel alignment Cape Town",
-    "suspension specialist Cape Town",
-    "brake repair Cape Town",
-    "clutch repair Cape Town",
-    "gearbox repair Cape Town",
-    "engine reconditioning Cape Town",
-    "auto electrician Cape Town",
-    "auto electrician Bellville",
-    "panel beater Cape Town",
-    "panel beater Bellville",
-    "panel beater Durbanville",
-    "auto body repair Cape Town",
-    "auto body repair Bellville",
-    "car aircon repair Cape Town",
-    "car battery Cape Town",
-    # Car Parts & Accessories
-    "car parts Cape Town",
-    "car parts Bellville",
-    "car parts Parow",
-    "auto parts supplier Cape Town",
-    "performance parts Cape Town",
-    "car accessories Cape Town",
-    "car audio Cape Town",
-    "car audio Bellville",
-    "car alarm Cape Town",
-    "car tracking Cape Town",
-    "car tracking Bellville",
-    # Vehicle Branding & Wraps
-    "vehicle branding Cape Town",
-    "vehicle branding Bellville",
-    "car wrap Cape Town",
-    "car wrap Bellville",
-    "car wrap Durbanville",
-    "sign writing Cape Town",
-    "vehicle graphics Cape Town",
+    "truck dealership South Africa",
+    "motorcycle dealership South Africa",
+    "auto parts supplier South Africa",
+    "car rental company South Africa",
     # Logistics & Transport
-    "logistics company Cape Town",
-    "logistics company Bellville",
-    "courier company Cape Town",
-    "courier company Bellville",
-    "delivery company Cape Town",
-    "trucking company Cape Town",
-    "fleet management Cape Town",
-    "vehicle logistics Cape Town",
-    "car transport Cape Town",
-    "car carrier Cape Town",
-    # Motorsport & Driving
-    "motorsport Cape Town",
-    "racing team Cape Town",
-    "karting track Cape Town",
-    "karting track Bellville",
-    "driving school Cape Town",
-    "driving school Bellville",
-    "driving school Durbanville",
-    "car club Cape Town",
-    "car club Bellville",
-    "motorsport club Cape Town",
-    # Sports & Sponsorship (expanded)
-    "sports marketing agency Cape Town",
-    "sports sponsorship Cape Town",
-    "event sponsorship Cape Town",
-    "sports sponsorship Bellville",
-    "sponsorship opportunities South Africa",
+    "logistics company South Africa",
+    "courier company South Africa",
+    "freight company Johannesburg",
+    "freight company Cape Town",
+    "transport company Pretoria",
+    "fleet management South Africa",
+    "vehicle tracking South Africa",
+    # Engineering & Manufacturing
+    "engineering company South Africa",
+    "manufacturing company Johannesburg",
+    "manufacturing company Cape Town",
+    "metal fabrication South Africa",
+    "workshop equipment supplier South Africa",
+    "safety equipment supplier South Africa",
+    # Construction & Infrastructure
+    "construction company South Africa",
+    "building materials supplier South Africa",
+    "civil engineering South Africa",
+    "infrastructure company South Africa",
+    # Energy & Sustainability
+    "renewable energy company South Africa",
+    "solar company South Africa",
+    "battery supplier South Africa",
+    "energy solutions South Africa",
+    # Finance & Insurance
+    "vehicle finance South Africa",
+    "business insurance South Africa",
+    "corporate finance company South Africa",
+    "investment company South Africa",
+    # Sports & Sponsorship
+    "sports sponsorship South Africa",
     "motorsport sponsorship South Africa",
+    "event sponsorship South Africa",
     "corporate sponsorship South Africa",
-    "car racing sponsorship South Africa",
-    "automotive sponsorship Cape Town",
-    "logistics sponsorship South Africa",
-    "transport sponsorship South Africa",
-    "business sponsorship Cape Town",
-    "company sponsorship for sports South Africa",
-    "sponsor a team South Africa",
-    "brand sponsorship motorsport South Africa",
-    # Workshop & Safety
-    "workshop equipment supplier Cape Town",
-    "workshop equipment supplier Bellville",
-    "safety gear supplier Cape Town",
-    "safety gear supplier Bellville",
-    "tool supplier Cape Town",
-    "tool supplier Bellville"
-]
+    "brand sponsorship South Africa",
+    "sports marketing agency South Africa",
+    # Media & Marketing
+    "advertising agency South Africa",
+    "marketing agency Johannesburg",
+    "marketing agency Cape Town",
+    "media company South Africa",
+    "digital marketing agency South Africa",
+    # Retail & Consumer Brands
+    "retail company South Africa",
+    "consumer goods company South Africa",
+    "beverage company South Africa",
+    "clothing brand South Africa",
+    "sports apparel South Africa",
+    # Technology & IT
+    "technology company South Africa",
+    "IT services South Africa",
+    "software company Johannesburg",
+    "software company Cape Town",
+    # Hospitality & Tourism
+    "hotel group South Africa",
+    "guesthouse Johannesburg",
+    "accommodation Sandton",
+    "travel company South Africa",
+    # Food & Beverage (non-conflicting with Red Bull? avoid energy drinks, but general okay)
+    "restaurant group South Africa",
+    "food company South Africa",
+    "catering company Johannesburg",
+    # General Business
+    "business directory South Africa",
+    "top companies South Africa",
+    "sponsorship opportunities South Africa",
+    "partnership opportunities South Africa"
 ]
 
 MAX_COMPANIES_PER_RUN = 50
@@ -169,53 +133,16 @@ Team Captain, Kwik Kwik Nawu Nawu
 # ---------- Attachments ----------
 ATTACHMENTS = [
     "attachments/RedBull Proposal.pdf",
-    "attachments/RBBCR TEAM DETAILS.pdf",
+    "attachments/RBBCR TEAM DETAILS.pdf"
 ]
 
 # ---------- CC Recipient ----------
 CC_EMAIL = "katlegomalogadithare@gmail.com"
 
-# ---------- Seed Companies ----------
-SEED_COMPANIES = [
-    "https://www.cars.co.za",
-    "https://www.autotrader.co.za",
-    "https://www.motus.co.za",
-    "https://www.barloworld.com",
-    "https://www.imperial.co.za",
-    "https://www.supaquick.com",
-    "https://www.hiq.co.za",
-    "https://www.bestdrive.co.za",
-    "https://www.twt.co.za",
-    "https://www.netstar.co.za",
-    "https://www.tracker.co.za",
-    "https://www.cartrack.co.za",
-    "https://www.cds.co.za",
-    "https://www.fastway.co.za",
-    "https://www.thecourierguy.co.za",
-    "https://www.dawnwing.co.za",
-    "https://www.dpd.com/za",
-    "https://www.dsv.com/en-za",
-    "https://www.dhl.com/za-en",
-    "https://www.bidvest.co.za",
-    "https://collivery.net",
-    "https://www.bex.co.za",
-    "https://www.aerospeed.co.za",
-    "https://www.citisprint.co.za",
-    "https://www.intertown.co.za",
-    "https://www.kempston.co.za",
-    "https://www.millstockcars.co.za",
-    "https://www.avautos.co.za",
-    "https://www.pioneerfreight.co.za",
-    "https://www.liebenlogistics.co.za",
-    "https://www.sekologistics.com",
-    "https://www.gracecouriers.co.za",
-    "https://www.tlc-logistics.co.za",
-    "https://www.ontrackautoservices.co.za",
-    "https://www.smikemotors.co.za",
-    "https://www.automotivex.co.za"
-]
-
 # ---------- Manual Recipients (always emailed) ----------
 MANUAL_RECIPIENTS = [
     ("carol@mscsports.co.za", "MSC Sports", "https://mscsports.co.za")
 ]
+
+# ---------- Seed Companies (empty – use search only) ----------
+SEED_COMPANIES = []
