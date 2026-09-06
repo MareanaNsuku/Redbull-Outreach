@@ -15,54 +15,41 @@ GMAIL_SMTP_PORT = 587
 
 # ---------- Scraping Settings (Red Bull Cart Race relevant) ----------
 SEARCH_QUERIES = [
-    # Automotive & Racing
-    "motorsport South Africa",
-    "racing team South Africa",
-    "karting South Africa",
-    "go kart South Africa",
-    "car racing sponsorship South Africa",
-    "automotive sponsorship South Africa",
-    "car dealership South Africa",
-    "car parts South Africa",
-    "performance parts South Africa",
-    "automotive accessories South Africa",
-    "vehicle branding South Africa",
-    "car wrap South Africa",
-    # Logistics & Transport
-    "logistics company South Africa",
-    "courier company South Africa",
-    "freight company South Africa",
-    "transport company South Africa",
-    "fleet management South Africa",
-    "vehicle tracking South Africa",
+    # Automotive & Racing (Cape Town focused)
+    "motorsport Cape Town",
+    "racing team Cape Town",
+    "karting Cape Town",
+    "go kart Cape Town",
+    "car racing sponsorship Cape Town",
+    "automotive sponsorship Cape Town",
+    "car dealership Cape Town",
+    "car dealership Bellville",
+    "car dealership Durbanville",
+    "car dealership Parow",
+    "car dealership Somerset West",
+    "car parts Cape Town",
+    "performance parts Cape Town",
+    "automotive accessories Cape Town",
+    "vehicle branding Cape Town",
+    "car wrap Cape Town",
+    # Logistics & Transport (vehicle-related)
+    "vehicle logistics Cape Town",
+    "car transport Cape Town",
+    "fleet management Cape Town",
+    "vehicle tracking Cape Town",
+    "courier company Cape Town",
     # Engineering & Workshop
-    "engineering company South Africa",
-    "workshop equipment South Africa",
-    "safety gear South Africa",
-    "tool supplier South Africa",
-    "metal fabrication South Africa",
-    # Sports & Sponsorship
-    "sports sponsorship South Africa",
-    "event sponsorship South Africa",
-    "sports marketing South Africa",
-    "brand sponsorship South Africa",
-    # Media & Marketing
-    "advertising agency South Africa",
-    "marketing agency South Africa",
-    "media company South Africa",
-    # Construction & Infrastructure
-    "construction company South Africa",
-    "building materials South Africa",
-    # Finance & Insurance
-    "vehicle finance South Africa",
-    "business insurance South Africa",
-    # Hospitality & Accommodation (near race)
-    "accommodation Sandton",
-    "hotel Sandton",
-    "guesthouse Johannesburg",
-    # General South African business
-    "top companies South Africa",
-    "South African businesses sponsorship"
+    "engineering company Cape Town",
+    "workshop equipment Cape Town",
+    "safety gear supplier Cape Town",
+    "tool supplier Cape Town",
+    "metal fabrication Cape Town",
+    # Sports & Sponsorship (motorsport/automotive-related)
+    "sports sponsorship Cape Town",
+    "motorsport sponsorship Cape Town",
+    "event sponsorship Cape Town",
+    "sports marketing Cape Town"
+]
 ]
 
 MAX_COMPANIES_PER_RUN = 50
