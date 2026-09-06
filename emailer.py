@@ -8,85 +8,16 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from config import *
-JUNK_EMAIL_DOMAINS = [
-    "throwawaymail.com",
-    "temp-mail.org",
-    "yopmail.com",
-    "10minutemail.com",
-    "guerrillamail.com",
-    "mailinator.com",
-    "spam.com",
-    "bounces.com",
-    "bounce.com",
-    "influasia.com",
-    "sortlist.com",
-    "autoyas.com",
-    "hellopeter.com",
-    "cybo.com",
-    "elmejortrato.com",
-    "netpages.co.za",
-    "panelbeatersdirectory.co.za",
-    "towingdirectory.co.za",
-    "drivingschoolfinder.co.za",
-    "quotesadvisor.com",
-    "infoisinfo.co.za",
-    "findglocal.com",
-    "shopshours.co.za",
-    "fyple.co.za",
-    "brabys.com",
-    "hotfrog.co.za",
-    "snupit.co.za",
-    "trustlink.co.za",
-    "africanadvice.com",
-    "d7leadfinder.com",
-    "aeroleads.com",
-    "lusha.com",
-    "contactout.com",
-    "dnb.com",
-    "goodfirms.co",
-    "wordpress.org",
-    "outlook.com",
-    "dryd.co.zawe",
-    "300ppi.png",
-    "travelocity.com",
-    "bbb.org",
-    "jiffylube.com",
-    "pepboys.com",
-    "cargurus.com",
-    "carsforsale.com",
-    "repairpal.com",
-    "ziprecruiter.com",
-    "hilbgroup.com",
-    "diehlofrobinson.com",
-    "sparefoot.com",
-    "brokersnapshot.com",
-    "movecars.com",
-    "japanesecartrade.com",
-    "dartmotors.net",
-    "aaalimotx.com",
-    "accurateauto.com",
-    "aggressivestl.com",
-    "royallimohouston.com",
-    "quora.com",
-    "reddit.com",
-    "glassdoor.com",
-    "mapquest.com",
-    "bebee.com",
-    "sayellow.com",
-    "opendi.co.za",
-]
-
 
 # ---------- Global constants ----------
 MAX_RETRIES = 3
 RETRY_DELAY = 10
-DAILY_LIMIT = 300   # maximum emails per run, keeps us under Gmail's daily cap
+DAILY_LIMIT = 100   # safe limit for Brevo free tier / Gmail
 
 sent_count = 0
 
 def is_valid_email_format(email):
-    """Return True if email looks valid and not likely to bounce."""
-    import re
+    """Return True if email looks valid and unlikely to bounce."""
     if not email or not isinstance(email, str):
         return False
     email = email.strip().lower()
@@ -100,71 +31,20 @@ def is_valid_email_format(email):
     tld = domain.split('.')[-1]
     if not re.match(r'^[a-z]{2,10}$', tld):
         return False
-    # Reject placeholder/common junk
+    # Reject placeholder common junk
     placeholders = ['example', 'test', 'user', 'jane.doe', 'john.doe', 'info', 'support', 'contact', 'admin']
     if local in placeholders:
         return False
-    # Reject local parts starting with digits or containing many digits
     if re.match(r'^\d{2,}', local) or len(re.findall(r'\d', local)) > 3:
         return False
-    # Reject suspicious keywords in domain or local
     suspicious = ['wixsite', 'wordpress', 'weebly', 'blogspot', 'tumblr', 'site123', 'webnode']
     for kw in suspicious:
         if kw in domain or kw in local:
             return False
     return True
 
-
-def send_via_gmail_smtp(to_email, company_name, website):
-    """Send email using Gmail SMTP."""
-    global sent_count
-    if sent_count >= DAILY_LIMIT:
-        print("  Daily limit reached, skipping Gmail.")
-        return False
-
-    body = EMAIL_BODY.format(company_name=company_name, website=website)
-    msg = MIMEMultipart()
-    msg["Subject"] = EMAIL_SUBJECT
-    msg["From"] = SENDER_EMAIL.strip()
-    msg["To"] = to_email
-    msg["Cc"] = CC_EMAIL.strip()
-    msg["X-Priority"] = "1"
-    msg["Importance"] = "High"
-    msg.attach(MIMEText(body, "plain"))
-
-    for filepath in ATTACHMENTS:
-        if os.path.exists(filepath):
-            filename = os.path.basename(filepath)
-            try:
-                with open(filepath, "rb") as attachment:
-                    part = MIMEBase("application", "octet-stream")
-                    part.set_payload(attachment.read())
-                    encoders.encode_base64(part)
-                    part.add_header("Content-Disposition", f"attachment; filename= {filename}")
-                    msg.attach(part)
-            except Exception as e:
-                print(f"  Failed to attach {filename}: {e}")
-
-    recipients = [to_email, CC_EMAIL.strip()] if CC_EMAIL else [to_email]
-    recipients = list(dict.fromkeys(recipients))
-
-    for attempt in range(MAX_RETRIES):
-        try:
-            with smtplib.SMTP(GMAIL_SMTP_HOST, GMAIL_SMTP_PORT, timeout=30) as server:
-                server.starttls()
-                server.login(SENDER_EMAIL.strip(), GMAIL_APP_PASSWORD.strip())
-                server.sendmail(SENDER_EMAIL.strip(), recipients, msg.as_string())
-            print(f"  Sent via Gmail to {to_email}")
-            sent_count += 1
-            return True
-        except Exception as e:
-            print(f"  Gmail attempt {attempt+1} failed: {e}")
-            if attempt < MAX_RETRIES - 1:
-                time.sleep(RETRY_DELAY)
-    return False
-
 def send_via_brevo_api(to_email, company_name, website):
-    """Send email using Brevo HTTP API (fallback)."""
+    """Send email via Brevo HTTP API. Returns True on success."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily limit reached, skipping Brevo API.")
@@ -174,6 +54,10 @@ def send_via_brevo_api(to_email, company_name, website):
     api_key = os.environ.get("BREVO_API_KEY", "").strip()
     sender_email = SENDER_EMAIL.strip()
     cc_email = CC_EMAIL.strip()
+
+    if not api_key:
+        print("  Brevo API key missing, skipping Brevo.")
+        return False
 
     data = {
         "sender": {"email": sender_email},
@@ -187,9 +71,6 @@ def send_via_brevo_api(to_email, company_name, website):
         "content-type": "application/json",
         "api-key": api_key
     }
-    if not api_key:
-        print("  Brevo API key missing, skipping.")
-        return False
 
     for attempt in range(MAX_RETRIES):
         try:
@@ -213,23 +94,84 @@ def send_via_brevo_api(to_email, company_name, website):
                 time.sleep(RETRY_DELAY)
     return False
 
+def send_via_gmail_smtp(to_email, company_name, website):
+    """Send email via Gmail SMTP. Only called if credentials are present."""
+    global sent_count
+    if sent_count >= DAILY_LIMIT:
+        print("  Daily limit reached, skipping Gmail.")
+        return False
+
+    app_password = os.environ.get("GMAIL_APP_PASSWORD", "").strip()
+    sender_email = SENDER_EMAIL.strip()
+    cc_email = CC_EMAIL.strip()
+
+    if not app_password:
+        print("  Gmail app password missing, skipping Gmail fallback.")
+        return False
+
+    body = EMAIL_BODY.format(company_name=company_name, website=website)
+    msg = MIMEMultipart()
+    msg["Subject"] = EMAIL_SUBJECT
+    msg["From"] = sender_email
+    msg["To"] = to_email
+    if cc_email:
+        msg["Cc"] = cc_email
+    msg["X-Priority"] = "1"
+    msg["Importance"] = "High"
+    msg.attach(MIMEText(body, "plain"))
+
+    for filepath in ATTACHMENTS:
+        if os.path.exists(filepath):
+            filename = os.path.basename(filepath)
+            try:
+                with open(filepath, "rb") as attachment:
+                    part = MIMEBase("application", "octet-stream")
+                    part.set_payload(attachment.read())
+                    encoders.encode_base64(part)
+                    part.add_header("Content-Disposition", f"attachment; filename= {filename}")
+                    msg.attach(part)
+            except Exception as e:
+                print(f"  Failed to attach {filename}: {e}")
+
+    recipients = [to_email, cc_email] if cc_email else [to_email]
+    recipients = list(dict.fromkeys(recipients))
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            with smtplib.SMTP(GMAIL_SMTP_HOST, GMAIL_SMTP_PORT, timeout=30) as server:
+                server.starttls()
+                server.login(sender_email, app_password)
+                server.sendmail(sender_email, recipients, msg.as_string())
+            print(f"  Sent via Gmail to {to_email}")
+            sent_count += 1
+            return True
+        except Exception as e:
+            print(f"  Gmail attempt {attempt+1} failed: {e}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+    return False
+
 def send_email(to_email, company_name, website):
-    """Send email with Gmail first, Brevo API fallback."""
+    """Main send function: Brevo first, then Gmail fallback if needed."""
     global sent_count
     if sent_count >= DAILY_LIMIT:
         print("  Daily email limit reached, skipping.")
         return "Limit reached"
 
-    if not to_email or not isinstance(to_email, str) or to_email.strip() == "" or not is_valid_email_format(to_email):
-        print(f"No valid email for {company_name}, skipping.")
-        return "No email"
+    if not is_valid_email_format(to_email):
+        print(f"  Invalid email format: {to_email}, skipping.")
+        return "Invalid"
 
     to_email = to_email.strip()
-    print(f"  Trying Gmail first for {to_email}...")
+    print(f"  Attempting to send to {to_email}...")
+
+    # Try Brevo API first
+    print("  Trying Brevo API...")
     if send_via_brevo_api(to_email, company_name, website):
         return "Sent"
 
-    print(f"  Brevo API failed, falling back to Gmail for {to_email}...")
+    # Fallback to Gmail SMTP if Brevo fails
+    print("  Brevo failed, falling back to Gmail...")
     if send_via_gmail_smtp(to_email, company_name, website):
         return "Sent"
 
