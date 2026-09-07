@@ -13,7 +13,7 @@ BREVO_SMTP_PORT = 587
 GMAIL_SMTP_HOST = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
 
-# ---------- Scraping Settings (Expanded Cape Town automotive focus) ----------
+# ---------- Scraping Settings (reduced Cape Town automotive focus) ----------
 SEARCH_QUERIES = [
     "motorsport Cape Town",
     "racing team Cape Town",
@@ -35,7 +35,6 @@ SEARCH_QUERIES = [
     "vehicle branding Cape Town",
     "car wrap Cape Town",
     "logistics company Cape Town"
-]
 ]
 
 MAX_COMPANIES_PER_RUN = 30
@@ -83,7 +82,7 @@ ATTACHMENTS = [
 # ---------- CC Recipient ----------
 CC_EMAIL = "katlegomalogadithare@gmail.com"
 
-# ---------- Manual Recipients (always emailed) ----------
+# ---------- Manual Recipients (empty) ----------
 MANUAL_RECIPIENTS = []
 
 # ---------- Seed Companies (empty – use search only) ----------
