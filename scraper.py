@@ -185,9 +185,9 @@ def find_company_websites():
             print(f"Searching: {query}")
             success = False
             # Try DDG up to 3 times with backoff
-            for attempt in range(3):
+            for attempt in range(2):
                 try:
-                    results = ddgs.text(query, max_results=8)
+                    results = ddgs.text(query, max_results=5)
                     if results:
                         for res in results:
                             url = res.get("href")
@@ -197,10 +197,10 @@ def find_company_websites():
                         break
                     else:
                         print(f"  DDG no results (attempt {attempt+1}), waiting...")
-                        time.sleep(10 * (attempt + 1))
+                        time.sleep(20 * (attempt + 1))
                 except Exception as e:
                     print(f"  DDG error (attempt {attempt+1}): {e}")
-                    time.sleep(10 * (attempt + 1))
+                    time.sleep(20 * (attempt + 1))
             # If DDG failed completely, try Google once
             if not success:
                 print("  DDG failed, trying Google...")
@@ -212,7 +212,7 @@ def find_company_websites():
                 except Exception as e:
                     print(f"  Google fallback error: {e}")
             # Longer sleep between queries
-            time.sleep(15 + random.uniform(0, 5))
+            time.sleep(30 + random.uniform(0, 10))
     return list(domains)[:MAX_COMPANIES_PER_RUN]
 
 def extract_emails_phones(url):
