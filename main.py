@@ -6,7 +6,7 @@ from config import CSV_FILE
 MAX_ATTEMPTS = 3
 
 def get_attempts(row):
-    """Return integer attempts, defaulting to 0 if missing or invalid."""
+    """Safely get attempts as integer."""
     try:
         val = row.get('attempts', 0)
         if pd.isna(val):
@@ -15,28 +15,14 @@ def get_attempts(row):
     except (ValueError, TypeError):
         return 0
 
-def send_manual_emails():
-    from config import MANUAL_RECIPIENTS
-    for email, company, website in MANUAL_RECIPIENTS:
-        print(f"Sending manual email to {email}...")
-        status = send_email(email, company, website)
-        print(f"Manual send result for {email}: {status}")
-
-
 def main():
-    send_manual_emails()
-
     print("Starting company outreach...")
     df = scrape_companies()
 
-    # Ensure attempts column exists and is numeric
     if 'attempts' not in df.columns:
         df['attempts'] = 0
-    else:
-        df['attempts'] = df['attempts'].apply(lambda x: get_attempts({'attempts': x}))
 
-    # Process rows that are not already sent or permanently failed
-    pending = df[~df['emailed'].isin(['Sent', 'Permanent Failed'])]
+    pending = df[~df['emailed'].isin(['Sent', 'Permanent Failed', 'Bounced'])]
     print(f"Pending emails to process: {len(pending)}")
 
     for idx, row in pending.iterrows():
@@ -57,19 +43,9 @@ def main():
             df.to_csv(CSV_FILE, index=False)
             continue
 
-        try:
-            status = send_email(email, company, website)
-        except Exception as e:
-            print(f"ERROR sending to {email}: {e}")
-            status = 'Failed'
-
-        # Update status and attempts
+        status = send_email(email, company, website)
         df.at[idx, 'attempts'] = attempts + 1
-        if status == 'Sent':
-            df.at[idx, 'emailed'] = 'Sent'
-        else:
-            df.at[idx, 'emailed'] = status
-
+        df.at[idx, 'emailed'] = status
         df.to_csv(CSV_FILE, index=False)
         print(f"Status for {company}: {status} (attempt {attempts+1})")
 
