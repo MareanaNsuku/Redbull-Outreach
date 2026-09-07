@@ -28,9 +28,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Cooldown before scraping
-        run: sleep 1800
-
       - name: Run outreach
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
