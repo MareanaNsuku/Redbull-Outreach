@@ -101,7 +101,6 @@ def send_via_brevo_api(to_email, company_name, website):
                 sent_count += 1
                 return True, None
             elif response.status_code == 400:
-                # Often invalid recipient or sender; detect if recipient domain bad
                 try:
                     err = response.json()
                     if "invalid" in str(err).lower() or "recipient" in str(err).lower():
@@ -171,7 +170,6 @@ def send_via_gmail_smtp(to_email, company_name, website):
             sent_count += 1
             return True, None
         except smtplib.SMTPRecipientsRefused as e:
-            # Permanent recipient error -> bounce
             print(f"  Gmail recipient refused: {e}")
             domain = to_email.split("@")[-1]
             return False, domain
