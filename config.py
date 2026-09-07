@@ -86,4 +86,33 @@ CC_EMAIL = "katlegomalogadithare@gmail.com"
 MANUAL_RECIPIENTS = []
 
 # ---------- Seed Companies (empty – use search only) ----------
-SEED_COMPANIES = []
+SEED_COMPANIES = [
+    "https://www.autotrader.co.za",
+    "https://www.cars.co.za",
+    "https://www.supaquick.com",
+    "https://www.hiq.co.za",
+    "https://www.bestdrive.co.za",
+    "https://www.twt.co.za",
+    "https://www.netstar.co.za",
+    "https://www.tracker.co.za",
+    "https://www.cartrack.co.za",
+    "https://www.cds.co.za",
+    "https://www.fastway.co.za",
+    "https://www.thecourierguy.co.za",
+    "https://www.dawnwing.co.za",
+    "https://collivery.net",
+    "https://www.bex.co.za",
+    "https://www.aerospeed.co.za",
+    "https://www.citisprint.co.za",
+    "https://www.intertown.co.za",
+    "https://www.kempston.co.za",
+    "https://www.millstockcars.co.za",
+    "https://www.avautos.co.za",
+    "https://www.pioneerfreight.co.za",
+    "https://www.liebenlogistics.co.za",
+    "https://www.sekologistics.com",
+    "https://www.gracecouriers.co.za",
+    "https://www.tlc-logistics.co.za",
+    "https://www.ontrackautoservices.co.za",
+    "https://www.smikemotors.co.za"
+]
